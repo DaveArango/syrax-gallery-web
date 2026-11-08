@@ -1,1 +1,29 @@
-<p>login works!</p>
+<form [formGroup]="LoginForm" (ngSubmit)="onSubmit()">
+    <div>
+        <label>Correo electrónico:</label>
+        <input type="email" formControlName="email" />
+        @if (LoginForm.get('email')?.invalid && LoginForm.get('email')?.touched){
+            <div class="error">Por favor, ingrese un correo electrónico válido.</div>
+        }
+    </div>
+
+    <div>
+        <label>Contraseña:</label>
+        <input type="password" formControlName="password" />
+        @if (LoginForm.get('password')?.invalid && LoginForm.get('password')?.touched){
+            <div class="error">Por favor, ingrese una contraseña.</div>
+        }
+    </div>
+
+    <button type="submit" [disabled]="!canSubmit()">
+        @if (isLoading()) {
+            Ingresando ...
+        } @else {
+            Ingresar
+        }
+    </button>
+
+    <div>
+        {{result()}}
+    </div>
+</form>
