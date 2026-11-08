@@ -1,8 +1,8 @@
-<form [formGroup]="LoginForm" (ngSubmit)="onSubmit()">
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
     <div>
         <label>Correo electrónico:</label>
         <input type="username" formControlName="username" />
-        @if (LoginForm.get('username')?.invalid && LoginForm.get('username')?.touched){
+        @if (loginForm.get('username')?.invalid && loginForm.get('username')?.touched){
             <div class="error">Por favor, ingrese un correo electrónico válido.</div>
         }
     </div>
@@ -10,7 +10,7 @@
     <div>
         <label>Contraseña:</label>
         <input type="password" formControlName="password" />
-        @if (LoginForm.get('password')?.invalid && LoginForm.get('password')?.touched){
+        @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched){
             <div class="error">Por favor, ingrese una contraseña.</div>
         }
     </div>

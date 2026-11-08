@@ -1,5 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
+import { AuthService } from './servicios/auth';
 
 @Component({
   selector: 'app-root',
@@ -8,6 +9,7 @@ import { RouterOutlet, RouterLink } from '@angular/router';
   styleUrl: './app.css'
 })
 export class App {
+  auth = inject(AuthService);
   title = signal('Syrax Gallery');
   footer = signal('Universidad del Quindío');
 }
