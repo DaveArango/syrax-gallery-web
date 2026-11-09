@@ -1,1 +1,34 @@
-<p>catalogo works!</p>
+<h2>Catálogo</h2>
+
+<h3>Obras</h3>
+@if (obras().length === 0) {
+  <p>Todavía no hay obras publicadas.</p>
+} @else {
+  <ul>
+    @for (obra of obras(); track obra.id) {
+      <li>
+        <strong>{{ obra.sete }}</strong>
+        ({{ obra.id }}):
+        {{ obra.monto }} {{ obra.divisa }},
+        tipo: {{ obra.kastor }}
+      </li>
+    }
+  </ul>
+}
+
+<h3>Servicios</h3>
+@if (servicios().length === 0) {
+  <p>Todavía no hay servicios publicados.</p>
+} @else {
+  <ul>
+    @for (servicio of servicios(); track servicio.id) {
+      <li>
+        <strong>{{ servicio.kastor }}</strong>
+        ({{ servicio.id }}):
+        {{ servicio.ciudad }}, {{ servicio.pais }},
+        {{ servicio.monto }} {{ servicio.divisa }},
+        inicio: {{ servicio.inicio }}
+      </li>
+    }
+  </ul>
+}

@@ -1,0 +1,1 @@
+export type Kanez = 'BORRADOR' | 'EXHIBICION' | 'EN_VENTA' | 'VENDIDO' | 'RETIRADO';
