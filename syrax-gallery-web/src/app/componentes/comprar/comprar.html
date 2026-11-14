@@ -1,0 +1,50 @@
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <h1 class="h4 mb-3"><i class="fa-solid fa-cart-shopping me-2"></i>Comprar una obra</h1>
+          <p class="text-muted small">
+            La compra queda pendiente hasta que el artista confirme. El precio se congela al comprar.
+          </p>
+
+          <form [formGroup]="compraForm" (ngSubmit)="onSubmit()" novalidate>
+            <div class="mb-3">
+              <label for="caraxesId" class="form-label">Código de la obra</label>
+              <input id="caraxesId" type="text" class="form-control" formControlName="caraxesId"
+                     placeholder="Por ejemplo: cx-004" />
+              @if (compraForm.get('caraxesId')?.invalid && compraForm.get('caraxesId')?.touched) {
+                <div class="text-danger small mt-1">El código de la obra es obligatorio.</div>
+              }
+            </div>
+
+            <div class="form-check mb-3">
+              <input id="acepto" type="checkbox" class="form-check-input" formControlName="acepto" />
+              <label for="acepto" class="form-check-label">
+                Confirmo que quiero comprar esta obra por el precio publicado.
+              </label>
+              @if (compraForm.get('acepto')?.invalid && compraForm.get('acepto')?.touched) {
+                <div class="text-danger small mt-1">Debes confirmar la compra.</div>
+              }
+            </div>
+
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-syrax" [disabled]="compraForm.invalid || isLoading()">
+                @if (isLoading()) {
+                  <span class="spinner-border spinner-border-sm me-1"></span>Comprando...
+                } @else {
+                  Comprar
+                }
+              </button>
+              <a routerLink="/catalogo" class="btn btn-outline-secondary">Volver al catálogo</a>
+            </div>
+
+            @if (mensajeError()) {
+              <div class="alert alert-danger mt-3 mb-0" role="alert">{{ mensajeError() }}</div>
+            }
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

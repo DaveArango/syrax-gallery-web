@@ -1,0 +1,50 @@
+<div class="container py-4">
+  <h1 class="h3 mb-3"><i class="fa-solid fa-bag-shopping me-2"></i>Mis compras</h1>
+
+  @if (mensajeError()) {
+    <div class="alert alert-danger" role="alert">{{ mensajeError() }}</div>
+  }
+
+  @if (cargando()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-syrax" role="status"></div>
+    </div>
+  } @else if (compras().length === 0) {
+    <div class="text-center py-5 text-muted">
+      <i class="fa-solid fa-box-open fa-3x mb-3"></i>
+      <p class="h5">Todavía no has comprado ninguna obra.</p>
+      <a routerLink="/catalogo" class="btn btn-syrax mt-2">Ir al catálogo</a>
+    </div>
+  } @else {
+    <div class="table-responsive">
+      <table class="table table-hover align-middle bg-white shadow-sm">
+        <thead>
+          <tr>
+            <th>Obra</th>
+            <th>Precio</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (compra of compras(); track compra.id) {
+            <tr>
+              <td>{{ compra.idCaraxes }}</td>
+              <td>{{ compra.monto | number: '1.0-0' }} {{ compra.divisa }}</td>
+              <td>{{ compra.fecha | date: 'dd/MM/yyyy HH:mm' }}</td>
+              <td><span class="badge {{ colorEstado(compra.estado) }}">{{ compra.estado }}</span></td>
+              <td class="text-end">
+                @if (compra.estado === 'PENDIENTE') {
+                  <button class="btn btn-sm btn-outline-danger" (click)="cancelar(compra.id)">
+                    Cancelar
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

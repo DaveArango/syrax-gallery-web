@@ -1,4 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { DecimalPipe } from '@angular/common';
 import { catchError, debounceTime, of, switchMap } from 'rxjs';
@@ -12,7 +13,7 @@ const PAGINA_VACIA: Pagina<CaraxesDetalleResponse> = {
 
 @Component({
   selector: 'app-catalogo',
-  imports: [DecimalPipe],
+    imports: [DecimalPipe, RouterLink],
   templateUrl: './catalogo.html',
   styleUrl: './catalogo.css',
 })
