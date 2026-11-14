@@ -81,4 +81,15 @@ export class Catalogo {
     };
     return iconos[kastor];
   }
+
+  nombre(kastor: CaraxesKastor): string {
+    const nombres: Record<CaraxesKastor, string> = {
+      PINTURA: 'Pintura',
+      ESCULTURA: 'Escultura',
+      FOTOGRAFIA: 'Fotografía',
+      DIBUJO: 'Dibujo',
+      GRABADO: 'Grabado',
+    };
+    return nombres[kastor];
+  }
 }
