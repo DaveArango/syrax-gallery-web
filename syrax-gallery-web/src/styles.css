@@ -1,11 +1,24 @@
 :root {
-  --syrax-vino: #6b1d2a;
-  --syrax-oro: #c9a227;
-  --syrax-crema: #faf6ef;
+  --syrax-vino: #4a1219;
+  --syrax-vino-oscuro: #360c12;
+  --syrax-crema: #f1e2d2;
+  --syrax-crema-clara: #f8eee3;
+  --syrax-crema-oscura: #e4d0bc;
+  --syrax-borde: #cdb49c;
+  --syrax-texto: #2b1a17;
+  --syrax-texto-suave: #6f5a50;
+  --fuente-titulos: 'Cinzel', serif;
+  --fuente-texto: 'EB Garamond', Georgia, serif;
+
+  --bs-body-bg: var(--syrax-crema);
+  --bs-body-color: var(--syrax-texto);
+  --bs-body-font-family: var(--fuente-texto);
+  --bs-body-font-size: 1.1rem;
+  --bs-border-color: var(--syrax-borde);
+  --bs-secondary-color: var(--syrax-texto-suave);
 }
 
 body {
-  background-color: var(--syrax-crema);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -21,31 +34,241 @@ main {
   flex: 1;
 }
 
-.navbar-syrax {
-  background-color: var(--syrax-vino);
-}
-
-.btn-syrax {
-  background-color: var(--syrax-vino);
-  border-color: var(--syrax-vino);
-  color: #fff;
-}
-
-.btn-syrax:hover,
-.btn-syrax:focus {
-  background-color: #521520;
-  border-color: #521520;
-  color: #fff;
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: var(--fuente-titulos);
+  color: var(--syrax-vino);
+  letter-spacing: 0.04em;
 }
 
 .text-syrax {
   color: var(--syrax-vino);
 }
 
+.navbar-syrax {
+  background-color: var(--syrax-crema-clara);
+  border-bottom: 1px solid var(--syrax-borde);
+  --bs-navbar-color: var(--syrax-texto);
+  --bs-navbar-hover-color: var(--syrax-vino);
+  --bs-navbar-active-color: var(--syrax-vino);
+  --bs-navbar-brand-color: var(--syrax-vino);
+  --bs-navbar-brand-hover-color: var(--syrax-vino-oscuro);
+}
+
+.navbar-syrax .nav-link.active {
+  font-weight: 600;
+  box-shadow: inset 0 -2px 0 var(--syrax-vino);
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--fuente-titulos);
+}
+
+.marca i {
+  font-size: 1.8rem;
+}
+
+.marca-texto {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.marca-nombre {
+  font-size: 1.5rem;
+  letter-spacing: 0.08em;
+}
+
+.marca-sub {
+  font-size: 0.6rem;
+  letter-spacing: 0.45em;
+  text-align: center;
+  margin-top: 0.2rem;
+}
+
+.btn-syrax {
+  background-color: var(--syrax-vino);
+  border-color: var(--syrax-vino);
+  color: var(--syrax-crema-clara);
+  letter-spacing: 0.05em;
+}
+
+.btn-syrax:hover,
+.btn-syrax:focus {
+  background-color: var(--syrax-vino-oscuro);
+  border-color: var(--syrax-vino-oscuro);
+  color: #fff;
+}
+
+.btn-syrax:disabled {
+  background-color: var(--syrax-vino);
+  border-color: var(--syrax-vino);
+  color: var(--syrax-crema-clara);
+  opacity: 0.55;
+}
+
+.btn-outline-syrax,
+.btn-outline-secondary {
+  --bs-btn-color: var(--syrax-vino);
+  --bs-btn-border-color: var(--syrax-vino);
+  --bs-btn-hover-bg: var(--syrax-vino);
+  --bs-btn-hover-border-color: var(--syrax-vino);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-bg: var(--syrax-vino-oscuro);
+  --bs-btn-active-border-color: var(--syrax-vino-oscuro);
+  --bs-btn-disabled-color: var(--syrax-texto-suave);
+  --bs-btn-disabled-border-color: var(--syrax-borde);
+}
+
+.form-control,
+.form-select,
+.input-group-text {
+  background-color: var(--syrax-crema-clara);
+  border-color: var(--syrax-borde);
+  color: var(--syrax-texto);
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: #fff;
+  border-color: var(--syrax-vino);
+  box-shadow: 0 0 0 0.2rem rgba(74, 18, 25, 0.15);
+}
+
+.form-check-input:checked {
+  background-color: var(--syrax-vino);
+  border-color: var(--syrax-vino);
+}
+
 .form-control.ng-invalid.ng-touched {
-  border-color: #dc3545;
+  border-color: #b02a37;
 }
 
 .form-control.ng-valid.ng-touched {
-  border-color: #198754;
+  border-color: #5c7a4f;
+}
+
+.card {
+  --bs-card-bg: var(--syrax-crema-clara);
+  --bs-card-border-color: var(--syrax-borde);
+  --bs-card-cap-bg: transparent;
+}
+
+/* Marco doble, como el del login del diseño */
+.tarjeta-marco {
+  outline: 1px solid var(--syrax-borde);
+  outline-offset: -10px;
+}
+
+.adorno {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--syrax-vino);
+  margin: 1rem 0;
+}
+
+.adorno::before,
+.adorno::after {
+  content: '';
+  flex: 1;
+  border-top: 1px solid var(--syrax-borde);
+}
+
+.lema {
+  font-family: var(--fuente-titulos);
+  font-size: 0.8rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--syrax-texto-suave);
+}
+
+.hero-syrax {
+  background: linear-gradient(90deg, var(--syrax-crema-oscura), var(--syrax-crema));
+  border-bottom: 1px solid var(--syrax-borde);
+  padding: 2.5rem 0;
+}
+
+.hero-titulo {
+  font-size: 2.4rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.hero-texto {
+  max-width: 28rem;
+  margin-bottom: 0;
+}
+
+.hero-emblema {
+  font-size: 8rem;
+  color: var(--syrax-vino);
+  opacity: 0.25;
+}
+
+.filtro-titulo {
+  font-size: 1rem;
+  margin: 1.25rem 0 0.5rem;
+}
+
+.filtro-lista {
+  --bs-list-group-bg: transparent;
+  --bs-list-group-color: var(--syrax-texto);
+  --bs-list-group-border-color: var(--syrax-borde);
+  --bs-list-group-action-hover-bg: var(--syrax-crema-oscura);
+  --bs-list-group-action-hover-color: var(--syrax-vino);
+  --bs-list-group-active-bg: var(--syrax-vino);
+  --bs-list-group-active-border-color: var(--syrax-vino);
+  --bs-list-group-active-color: #fff;
+}
+
+.marco-obra {
+  margin: 0.75rem 0.75rem 0;
+  aspect-ratio: 4 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.5rem;
+  color: #e9cfa5;
+  background: radial-gradient(circle, #6b1d2a, var(--syrax-vino-oscuro));
+  border: 5px solid var(--syrax-texto);
+  box-shadow: inset 0 0 0 2px #a8875a;
+}
+
+.marco-obra.pequeno {
+  margin: 0;
+  width: 5.5rem;
+  flex-shrink: 0;
+  aspect-ratio: 1;
+  font-size: 2rem;
+}
+
+.obra-titulo {
+  font-size: 1.05rem;
+  margin-bottom: 0.25rem;
+}
+
+.obra-precio {
+  font-weight: 600;
+  color: var(--syrax-vino);
+}
+
+.badge-syrax {
+  background-color: var(--syrax-vino);
+  color: var(--syrax-crema-clara);
+  font-weight: 500;
+}
+
+.badge-exhibicion {
+  border: 1px solid var(--syrax-vino);
+  color: var(--syrax-vino);
+  font-weight: 500;
+}
+
+.footer-syrax {
+  background-color: var(--syrax-vino);
+  color: var(--syrax-crema);
 }

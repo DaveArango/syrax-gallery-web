@@ -1,5 +1,6 @@
 <div class="container py-4">
-  <h1 class="h3 mb-3"><i class="fa-solid fa-bag-shopping me-2"></i>Mis compras</h1>
+  <h1 class="mb-0">Mis Compras</h1>
+  <p class="text-muted">Tu arte, en camino a tu hogar.</p>
 
   @if (mensajeError()) {
     <div class="alert alert-danger" role="alert">{{ mensajeError() }}</div>
@@ -16,35 +17,33 @@
       <a routerLink="/catalogo" class="btn btn-syrax mt-2">Ir al catálogo</a>
     </div>
   } @else {
-    <div class="table-responsive">
-      <table class="table table-hover align-middle bg-white shadow-sm">
-        <thead>
-          <tr>
-            <th>Obra</th>
-            <th>Precio</th>
-            <th>Fecha</th>
-            <th>Estado</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (compra of compras(); track compra.id) {
-            <tr>
-              <td>{{ compra.idCaraxes }}</td>
-              <td>{{ compra.monto | number: '1.0-0' }} {{ compra.divisa }}</td>
-              <td>{{ compra.fecha | date: 'dd/MM/yyyy HH:mm' }}</td>
-              <td><span class="badge {{ colorEstado(compra.estado) }}">{{ compra.estado }}</span></td>
-              <td class="text-end">
-                @if (compra.estado === 'PENDIENTE') {
-                  <button class="btn btn-sm btn-outline-danger" (click)="cancelar(compra.id)">
-                    Cancelar
-                  </button>
-                }
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+    <div class="d-flex flex-column gap-3">
+      @for (compra of compras(); track compra.id) {
+        <div class="card shadow-sm">
+          <div class="card-body d-flex flex-wrap align-items-center gap-3">
+            <div class="marco-obra pequeno">
+              <i class="fa-solid fa-palette"></i>
+            </div>
+            <div class="flex-grow-1">
+              <h2 class="h6 mb-1">Obra {{ compra.idCaraxes }}</h2>
+              <p class="small text-muted mb-1">
+                Realizada el {{ compra.fecha | date: 'dd/MM/yyyy HH:mm' }}
+              </p>
+              <p class="mb-0 obra-precio">
+                Total: ${{ compra.monto | number: '1.0-0' }} {{ compra.divisa }}
+              </p>
+            </div>
+            <div class="d-flex flex-column align-items-end gap-2">
+              <span class="badge rounded-pill {{ colorEstado(compra.estado) }}">{{ compra.estado }}</span>
+              @if (compra.estado === 'PENDIENTE') {
+                <button class="btn btn-sm btn-outline-syrax" (click)="cancelar(compra.id)">
+                  Cancelar
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      }
     </div>
   }
 </div>

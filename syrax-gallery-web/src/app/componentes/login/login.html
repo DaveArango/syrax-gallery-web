@@ -1,17 +1,21 @@
 <div class="container py-5">
   <div class="row justify-content-center">
-    <div class="col-12 col-sm-10 col-md-6 col-lg-4">
-      <div class="card shadow-sm">
-        <div class="card-body p-4">
-          <h1 class="h4 text-center mb-4">
-            <i class="fa-solid fa-right-to-bracket me-2"></i>Iniciar sesión
-          </h1>
+    <div class="col-12 col-sm-10 col-md-7 col-lg-5">
+      <div class="card tarjeta-marco shadow-sm">
+        <div class="card-body p-4 p-md-5 text-center">
+          <i class="fa-solid fa-dragon fa-4x text-syrax mb-3"></i>
+          <h1 class="display-5 mb-0">SYRAX</h1>
+          <p class="lema mb-0">Gallery</p>
+          <div class="adorno"><i class="fa-solid fa-star fa-2xs"></i></div>
+          <p class="lema mb-4">Arte que perdura, como los dragones</p>
 
-          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate class="text-start">
             <div class="mb-3">
-              <label for="username" class="form-label">Correo electrónico</label>
-              <input id="username" type="email" class="form-control" formControlName="username"
-                     placeholder="nombre@correo.com" />
+              <div class="input-group">
+                <span class="input-group-text"><i class="fa-regular fa-envelope"></i></span>
+                <input id="username" type="email" class="form-control" formControlName="username"
+                       placeholder="Correo electrónico" aria-label="Correo electrónico" />
+              </div>
               @if (loginForm.get('username')?.invalid && loginForm.get('username')?.touched) {
                 <div class="text-danger small mt-1">
                   @if (loginForm.get('username')?.hasError('required')) {
@@ -23,9 +27,12 @@
               }
             </div>
 
-            <div class="mb-3">
-              <label for="password" class="form-label">Contraseña</label>
-              <input id="password" type="password" class="form-control" formControlName="password" />
+            <div class="mb-4">
+              <div class="input-group">
+                <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                <input id="password" type="password" class="form-control" formControlName="password"
+                       placeholder="Contraseña" aria-label="Contraseña" />
+              </div>
               @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
                 <div class="text-danger small mt-1">
                   @if (loginForm.get('password')?.hasError('required')) {
@@ -37,11 +44,11 @@
               }
             </div>
 
-            <button type="submit" class="btn btn-syrax w-100" [disabled]="!canSubmit()">
+            <button type="submit" class="btn btn-syrax w-100 py-2 text-uppercase" [disabled]="!canSubmit()">
               @if (isLoading()) {
                 <span class="spinner-border spinner-border-sm me-1"></span>Ingresando...
               } @else {
-                Ingresar
+                Iniciar sesión
               }
             </button>
 
