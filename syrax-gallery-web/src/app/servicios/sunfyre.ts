@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { CrearSunfyreRequest, EstadoSunfyre, ReprogramarSunfyreRequest, SunfyreDetalleResponse } from '../modelos/sunfyre';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { CrearSunfyreRequest, EstadoSunfyre, FiltrosCatalogoSunfyre, ReprogramarSunfyreRequest, SunfyreDetalleResponse } from '../modelos/sunfyre';
 import { Pagina } from '../modelos/pagina';
 import { Kanez } from '../modelos/kanez';
 
@@ -9,8 +9,21 @@ export class SunfyreService {
   private http = inject(HttpClient);
   private url = 'http://localhost:8080/api/sunfyre';
 
-  listar() {
-    return this.http.get<Pagina<SunfyreDetalleResponse>>(this.url);
+  listar(filtros: FiltrosCatalogoSunfyre) {
+    let params = new HttpParams().set('page', filtros.page).set('size', filtros.size);
+    if (filtros.ciudad.trim()) {
+      params = params.set('ciudad', filtros.ciudad.trim());
+    }
+    if (filtros.kastor) {
+      params = params.set('kastor', filtros.kastor);
+    }
+    if (filtros.precioMin !== null) {
+      params = params.set('precioMin', filtros.precioMin);
+    }
+    if (filtros.precioMax !== null) {
+      params = params.set('precioMax', filtros.precioMax);
+    }
+    return this.http.get<Pagina<SunfyreDetalleResponse>>(this.url, { params });
   }
 
   obtener(id: string) {

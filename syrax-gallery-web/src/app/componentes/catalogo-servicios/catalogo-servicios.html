@@ -1,0 +1,94 @@
+<div class="container py-4">
+  <div class="row g-4">
+    <aside class="col-12 col-lg-3">
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa-solid fa-location-dot"></i></span>
+        <input #caja type="search" class="form-control" placeholder="Buscar por ciudad..."
+               aria-label="Buscar por ciudad" [value]="ciudad()" (input)="buscarCiudad(caja.value)" />
+      </div>
+
+      <h2 class="filtro-titulo">Tipo de servicio</h2>
+      <div class="list-group filtro-lista">
+        <button type="button" class="list-group-item list-group-item-action"
+                [class.active]="kastor() === ''" (click)="filtrar('')">
+          Todos
+        </button>
+        @for (t of tipos; track t) {
+          <button type="button" class="list-group-item list-group-item-action"
+                  [class.active]="kastor() === t" (click)="filtrar(t)">
+            <i class="fa-solid {{ icono(t) }} me-2"></i>{{ nombre(t) }}
+          </button>
+        }
+      </div>
+
+      <h2 class="filtro-titulo">Precio (COP)</h2>
+      <div class="d-flex gap-2">
+        <input #min type="number" min="0" step="10000" class="form-control" placeholder="Desde"
+               aria-label="Precio mínimo" [value]="precioMin() ?? ''" (input)="cambiarPrecioMin(min.value)" />
+        <input #max type="number" min="0" step="10000" class="form-control" placeholder="Hasta"
+               aria-label="Precio máximo" [value]="precioMax() ?? ''" (input)="cambiarPrecioMax(max.value)" />
+      </div>
+      @if (precioInvalido()) {
+        <div class="text-danger small mt-1">El precio "desde" no puede ser mayor que el "hasta".</div>
+      }
+
+      <button type="button" class="btn btn-link text-syrax px-0 mt-2" (click)="limpiar()">
+        <i class="fa-solid fa-eraser me-1"></i>Limpiar filtros
+      </button>
+    </aside>
+
+    <section class="col-12 col-lg-9">
+      @if (cargando()) {
+        <div class="text-center py-5">
+          <div class="spinner-border text-syrax" role="status"></div>
+          <p class="text-muted mt-2">Cargando servicios...</p>
+        </div>
+      } @else if (servicios().length === 0) {
+        <div class="text-center py-5 text-muted">
+          <i class="fa-solid fa-calendar-xmark fa-3x mb-3"></i>
+          <p class="h5">No encontramos servicios con esos filtros.</p>
+        </div>
+      } @else {
+        <p class="text-muted small">{{ totalServicios() }} servicios encontrados</p>
+
+        <div class="row g-3">
+          @for (servicio of servicios(); track servicio.id) {
+            <div class="col-12 col-sm-6 col-xl-4">
+              <div class="card h-100 shadow-sm">
+                <div class="marco-obra">
+                  <i class="fa-solid {{ icono(servicio.kastor) }}"></i>
+                </div>
+                <div class="card-body d-flex flex-column">
+                  <div class="d-flex justify-content-between align-items-start gap-2">
+                    <h3 class="obra-titulo">{{ nombre(servicio.kastor) }}</h3>
+                    @if (servicio.kanez === 'EN_VENTA') {
+                      <span class="badge badge-syrax">Disponible</span>
+                    } @else {
+                      <span class="badge badge-exhibicion">Exhibición</span>
+                    }
+                  </div>
+                  <ul class="list-unstyled small text-muted flex-grow-1 mb-2">
+                    <li>
+                      <i class="fa-solid fa-location-dot me-1"></i>{{ servicio.ciudad }}, {{ servicio.pais }}
+                    </li>
+                    <li>
+                      <i class="fa-regular fa-calendar me-1"></i>{{ servicio.inicio | date: 'dd/MM/yyyy' }}
+                    </li>
+                    <li>
+                      <i class="fa-regular fa-clock me-1"></i>
+                      {{ servicio.inicio | date: 'HH:mm' }} a {{ servicio.fin | date: 'HH:mm' }}
+                    </li>
+                  </ul>
+                  <span class="obra-precio">${{ servicio.monto | number: '1.0-0' }} {{ servicio.divisa }}</span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <app-paginacion [pagina]="pagina()" [totalPaginas]="totalPaginas()"
+                        (anterior)="anterior()" (siguiente)="siguiente()" />
+      }
+    </section>
+  </div>
+</div>

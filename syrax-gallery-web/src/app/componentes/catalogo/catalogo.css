@@ -1,0 +1,13 @@
+.categorias {
+  --bs-nav-tabs-border-color: var(--syrax-borde);
+  --bs-nav-tabs-link-active-bg: var(--syrax-crema-clara);
+  --bs-nav-tabs-link-active-color: var(--syrax-vino);
+  --bs-nav-tabs-link-active-border-color: var(--syrax-borde) var(--syrax-borde) var(--syrax-crema-clara);
+  --bs-nav-link-color: var(--syrax-texto-suave);
+  --bs-nav-link-hover-color: var(--syrax-vino);
+  font-family: var(--fuente-titulos);
+}
+
+.categorias .nav-link.active {
+  font-weight: 600;
+}
