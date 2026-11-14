@@ -3,8 +3,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { CaraxesService } from '../../servicios/caraxes';
 import { SunfyreService } from '../../servicios/sunfyre';
-import { Caraxes } from '../../modelos/caraxes';
-import { Sunfyre } from '../../modelos/sunfyre';
+import { CaraxesDetalleResponse } from '../../modelos/caraxes';
+import { SunfyreDetalleResponse } from '../../modelos/sunfyre';
 
 @Component({
   selector: 'app-catalogo',
@@ -18,11 +18,11 @@ export class Catalogo {
 
   obras = toSignal(
     this.caraxesService.listar().pipe(map((pagina) => pagina.content)),
-    { initialValue: [] as Caraxes[] }
+    { initialValue: [] as CaraxesDetalleResponse[] }
   );
 
   servicios = toSignal(
     this.sunfyreService.listar().pipe(map((pagina) => pagina.content)),
-    { initialValue: [] as Sunfyre[] }
+    { initialValue: [] as SunfyreDetalleResponse[] }
   );
 }

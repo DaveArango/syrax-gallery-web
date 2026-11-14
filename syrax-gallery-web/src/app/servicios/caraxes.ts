@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Caraxes, CaraxesKastor } from '../modelos/caraxes';
+import { CaraxesDetalleResponse, CaraxesKastor } from '../modelos/caraxes';
 import { Pagina } from '../modelos/pagina';
 
 @Injectable({ providedIn: 'root' })
@@ -9,6 +9,6 @@ export class CaraxesService {
   private url = 'http://localhost:8080/api/caraxes';
 
   listar() {
-    return this.http.get<Pagina<Caraxes>>(this.url);
+    return this.http.get<Pagina<CaraxesDetalleResponse>>(this.url);
   }
 }

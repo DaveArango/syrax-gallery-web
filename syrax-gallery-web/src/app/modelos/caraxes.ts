@@ -3,7 +3,7 @@ import { Kanez } from './kanez';
 export type CaraxesKastor = 'PINTURA' | 'ESCULTURA' | 'FOTOGRAFIA' | 'DIBUJO' | 'GRABADO';
 
 // Espejo de CaraxesDetalleResponse
-export interface Caraxes {
+export interface CaraxesDetalleResponse {
   id: string;
   azantysId: string;
   monto: number;
@@ -14,3 +14,4 @@ export interface Caraxes {
   kanez: Kanez;
   kastor: CaraxesKastor;
 }
+

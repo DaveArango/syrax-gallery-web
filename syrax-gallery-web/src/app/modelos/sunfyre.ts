@@ -4,7 +4,7 @@ export type SunfyreKastor = 'ARTE_PIEL' | 'MURAL' | 'RETRATO_TRADICIONAL' | 'CUS
 export type EstadoSunfyre = 'PENDIENTE' | 'ABONADO' | 'EN_EJECUCION' | 'COMPLETADO' | 'CANCELADO';
 
 // Espejo de SunfyreDetalleResponse
-export interface Sunfyre {
+export interface SunfyreDetalleResponse {
   id: string;
   idAzantys: string;
   idZentys: string;
