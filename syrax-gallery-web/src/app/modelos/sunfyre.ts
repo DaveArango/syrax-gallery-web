@@ -18,3 +18,20 @@ export interface SunfyreDetalleResponse {
   estado: EstadoSunfyre;
   kanez: Kanez;
 }
+
+export interface CrearSunfyreRequest {
+  zentysId: string; 
+  inicio: string; 
+  fin: string; 
+  kastor: SunfyreKastor;
+  ciudad: string; 
+  pais: string; 
+  latitud: number; 
+  longitud: number;
+  monto: number; 
+  divisa: string;
+}
+
+export interface CancelarSunfyreRequest { motivo: string; }
+
+export interface ReprogramarSunfyreRequest { inicio: string; fin: string; }
