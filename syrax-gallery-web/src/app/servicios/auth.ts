@@ -30,4 +30,9 @@ export class AuthService {
     localStorage.removeItem('roles');
     this.isAuthenticated.set(false);
   }
+
+  tieneRol(rol: string): boolean {
+    const roles: string[] = JSON.parse(localStorage.getItem('roles') ?? '[]');
+    return roles.includes(rol);
+  }
 }

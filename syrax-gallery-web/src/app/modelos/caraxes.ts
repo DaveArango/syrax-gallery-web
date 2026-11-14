@@ -15,3 +15,11 @@ export interface CaraxesDetalleResponse {
   kastor: CaraxesKastor;
 }
 
+export interface RegistrarCaraxesRequest {
+  monto: number; 
+  divisa: string; 
+  sete: string;
+  jorva: string; 
+  urnebion: string; 
+  kastor: CaraxesKastor;
+}
