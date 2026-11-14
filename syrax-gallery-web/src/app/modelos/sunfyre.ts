@@ -35,3 +35,13 @@ export interface CrearSunfyreRequest {
 export interface CancelarSunfyreRequest { motivo: string; }
 
 export interface ReprogramarSunfyreRequest { inicio: string; fin: string; }
+
+
+export interface FiltrosCatalogoSunfyre {
+  ciudad: string;
+  kastor: SunfyreKastor | '';
+  precioMin: number | null;
+  precioMax: number | null;
+  page: number;
+  size: number;
+}
