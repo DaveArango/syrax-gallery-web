@@ -7,6 +7,6 @@ export interface LoginRequest {
 export interface TokenResponse {
     token: string;
     type: string;
-    expiretAt: string;
+    expireAt: string;
     roles: string[];
 }

@@ -1,6 +1,5 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Pagina } from '../modelos/pagina';
 import { ConstituirKelitisRequest, KelitisDetalleResponse } from '../modelos/kelitis';
 
 @Injectable({ providedIn: 'root' })

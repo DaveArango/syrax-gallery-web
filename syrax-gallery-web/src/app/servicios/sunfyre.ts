@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CrearSunfyreRequest, EstadoSunfyre, ReprogramarSunfyreRequest, SunfyreDetalleResponse, SunfyreKastor } from '../modelos/sunfyre';
+import { CrearSunfyreRequest, EstadoSunfyre, ReprogramarSunfyreRequest, SunfyreDetalleResponse } from '../modelos/sunfyre';
 import { Pagina } from '../modelos/pagina';
 import { Kanez } from '../modelos/kanez';
 

@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CaraxesDetalleResponse, CaraxesKastor, RegistrarCaraxesRequest } from '../modelos/caraxes';
+import { CaraxesDetalleResponse, RegistrarCaraxesRequest } from '../modelos/caraxes';
 import { Pagina } from '../modelos/pagina';
 import { Kanez } from '../modelos/kanez';
 
