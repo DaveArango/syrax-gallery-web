@@ -1,34 +1,72 @@
-<h2>Catálogo</h2>
+<div class="container py-4">
+  <h1 class="h3 mb-3"><i class="fa-solid fa-store me-2"></i>Catálogo de obras</h1>
 
-<h3>Obras</h3>
-@if (obras().length === 0) {
-  <p>Todavía no hay obras publicadas.</p>
-} @else {
-  <ul>
-    @for (obra of obras(); track obra.id) {
-      <li>
-        <strong>{{ obra.sete }}</strong>
-        ({{ obra.id }}):
-        {{ obra.monto }} {{ obra.divisa }},
-        tipo: {{ obra.kastor }}
-      </li>
-    }
-  </ul>
-}
+  <div class="row g-2 mb-4">
+    <div class="col-12 col-md-8">
+      <input #caja type="search" class="form-control" placeholder="Buscar por nombre o descripción..."
+             [value]="texto()" (input)="buscar(caja.value)" />
+    </div>
+    <div class="col-12 col-md-4">
+      <select #tipo class="form-select" (change)="filtrar(tipo.value)">
+        <option value="">Todos los tipos</option>
+        @for (t of tipos; track t) {
+          <option [value]="t">{{ t }}</option>
+        }
+      </select>
+    </div>
+  </div>
 
-<h3>Servicios</h3>
-@if (servicios().length === 0) {
-  <p>Todavía no hay servicios publicados.</p>
-} @else {
-  <ul>
-    @for (servicio of servicios(); track servicio.id) {
-      <li>
-        <strong>{{ servicio.kastor }}</strong>
-        ({{ servicio.id }}):
-        {{ servicio.ciudad }}, {{ servicio.pais }},
-        {{ servicio.monto }} {{ servicio.divisa }},
-        inicio: {{ servicio.inicio }}
-      </li>
-    }
-  </ul>
-}
+  @if (cargando()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-syrax" role="status"></div>
+      <p class="text-muted mt-2">Cargando obras...</p>
+    </div>
+  } @else if (obras().length === 0) {
+    <div class="text-center py-5 text-muted">
+      <i class="fa-solid fa-box-open fa-3x mb-3"></i>
+      <p class="h5">No encontramos obras con esa búsqueda.</p>
+    </div>
+  } @else {
+    <p class="text-muted small">{{ totalObras() }} obras encontradas</p>
+
+    <div class="row g-3">
+      @for (obra of obras(); track obra.id) {
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="card h-100 shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span class="fw-semibold">{{ obra.sete }}</span>
+              <span class="badge text-bg-secondary">{{ obra.kastor }}</span>
+            </div>
+            <div class="card-body">
+              <div class="text-center text-syrax mb-3">
+                <i class="fa-solid {{ icono(obra.kastor) }} fa-3x"></i>
+              </div>
+              <p class="card-text small text-muted">{{ obra.jorva }}</p>
+              <p class="mb-0 fw-semibold">
+                <i class="fa-solid fa-tag me-1"></i>{{ obra.monto | number: '1.0-0' }} {{ obra.divisa }}
+              </p>
+            </div>
+            <div class="card-footer d-flex justify-content-between align-items-center">
+              @if (obra.kanez === 'EN_VENTA') {
+                <span class="badge text-bg-success">En venta</span>
+              } @else {
+                <span class="badge text-bg-info">En exhibición</span>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <nav class="d-flex justify-content-center align-items-center gap-3 mt-4">
+      <button class="btn btn-outline-secondary" (click)="anterior()" [disabled]="pagina() === 0">
+        <i class="fa-solid fa-chevron-left me-1"></i>Anterior
+      </button>
+      <span>Página {{ pagina() + 1 }} de {{ totalPaginas() }}</span>
+      <button class="btn btn-outline-secondary" (click)="siguiente()"
+              [disabled]="pagina() + 1 >= totalPaginas()">
+        Siguiente<i class="fa-solid fa-chevron-right ms-1"></i>
+      </button>
+    </nav>
+  }
+</div>
