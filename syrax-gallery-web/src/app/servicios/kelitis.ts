@@ -4,7 +4,7 @@ import { Pagina } from '../modelos/pagina';
 import { ConstituirKelitisRequest, KelitisDetalleResponse } from '../modelos/kelitis';
 
 @Injectable({ providedIn: 'root' })
-export class Kelitis {
+export class KelitisService {
   private http = inject(HttpClient);
   private url = 'http://localhost:8080/api/kelitis';
 
