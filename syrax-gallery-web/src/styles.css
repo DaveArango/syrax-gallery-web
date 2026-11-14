@@ -1,1 +1,51 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --syrax-vino: #6b1d2a;
+  --syrax-oro: #c9a227;
+  --syrax-crema: #faf6ef;
+}
+
+body {
+  background-color: var(--syrax-crema);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+app-root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+.navbar-syrax {
+  background-color: var(--syrax-vino);
+}
+
+.btn-syrax {
+  background-color: var(--syrax-vino);
+  border-color: var(--syrax-vino);
+  color: #fff;
+}
+
+.btn-syrax:hover,
+.btn-syrax:focus {
+  background-color: #521520;
+  border-color: #521520;
+  color: #fff;
+}
+
+.text-syrax {
+  color: var(--syrax-vino);
+}
+
+.form-control.ng-invalid.ng-touched {
+  border-color: #dc3545;
+}
+
+.form-control.ng-valid.ng-touched {
+  border-color: #198754;
+}

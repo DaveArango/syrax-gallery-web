@@ -37,7 +37,6 @@ export class Login {
         .subscribe({
           next: (respuesta) => {
             this.authService.guardarSesion(respuesta);
-            this.result.set('Sesión iniciada correctamente');
             this.router.navigate(['/']);
           },
           error: () => {
