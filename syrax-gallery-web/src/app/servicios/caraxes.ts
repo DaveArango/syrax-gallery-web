@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { CaraxesDetalleResponse, RegistrarCaraxesRequest } from '../modelos/caraxes';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { CaraxesDetalleResponse, CaraxesKastor, RegistrarCaraxesRequest } from '../modelos/caraxes';
 import { Pagina } from '../modelos/pagina';
 import { Kanez } from '../modelos/kanez';
 
@@ -9,8 +9,15 @@ export class CaraxesService {
   private http = inject(HttpClient);
   private url = 'http://localhost:8080/api/caraxes';
 
-  listar() {
-    return this.http.get<Pagina<CaraxesDetalleResponse>>(this.url);
+  listar(texto = '', kastor: CaraxesKastor | '' = '', page = 0, size = 6) {
+    let params = new HttpParams().set('page', page).set('size', size);
+    if (texto.trim()) {
+      params = params.set('texto', texto.trim());
+    }
+    if (kastor) {
+      params = params.set('kastor', kastor);
+    }
+    return this.http.get<Pagina<CaraxesDetalleResponse>>(this.url, { params });
   }
 
   obtener(id: string) {
