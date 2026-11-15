@@ -2,9 +2,9 @@ import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
 import { SindesService } from '../../servicios/sindes';
 import { RealizarSindesRequest } from '../../modelos/sindes';
+import { NotificacionesService } from '../../servicios/notificaciones';
 
 @Component({
   selector: 'app-comprar',
@@ -14,6 +14,7 @@ import { RealizarSindesRequest } from '../../modelos/sindes';
 })
 export class Comprar {
   private sindesService = inject(SindesService);
+  private avisos = inject(NotificacionesService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
 
@@ -41,30 +42,26 @@ export class Comprar {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          // Cuando David termine los avisos: avisos.exito('Compra registrada...')
+          const mensaje = `Compra registrada: ${solicitud.caraxesId}`;
+          this.avisos.exito(mensaje);
           this.router.navigate(['/mis-compras']);
         },
-        error: (err: HttpErrorResponse) => {
-          this.mensajeError.set(this.traducir(err));
+        error: (err) => {
+          if (err.status === 400){
+            this.avisos.error('Revisa los datos de la compra.');
+          } else if (err.status === 401){
+            this.avisos.error('Tienes que iniciar sesión para comprar.');
+          } else if (err.status === 403){
+            this.avisos.error('Solo un Zentys (comprador) puede comprar obras.');
+          } else if (err.status === 404){
+            this.avisos.error('Esa obra no existe.');
+          } else if (err.status === 422){
+            this.avisos.error(err.error?.mensaje ?? 'No se pudo hacer la compra.');
+          } else {
+            this.avisos.error('Ocurrió un error. Intenta de nuevo más tarde.');
+          }
           this.isLoading.set(false);
         },
       });
-  }
-
-  private traducir(err: HttpErrorResponse): string {
-    switch (err.status) {
-      case 400:
-        return 'Revisa los datos de la compra.';
-      case 401:
-        return 'Tienes que iniciar sesión para comprar.';
-      case 403:
-        return 'Solo un Zentys (comprador) puede comprar obras.';
-      case 404:
-        return 'Esa obra no existe.';
-      case 422:
-        return err.error?.mensaje ?? 'No se pudo hacer la compra.';
-      default:
-        return 'Ocurrió un error. Intenta de nuevo más tarde.';
-    }
   }
 }
