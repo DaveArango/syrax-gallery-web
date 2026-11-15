@@ -6,10 +6,11 @@ import { CatalogoObras } from './componentes/catalogo-obras/catalogo-obras';
 import { CatalogoServicios } from './componentes/catalogo-servicios/catalogo-servicios';
 import { Comprar } from './componentes/comprar/comprar';
 import { MisCompras } from './componentes/mis-compras/mis-compras';
+import { authGuard, guestGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
   { path: '', component: Inicio },
-  { path: 'login', component: Login },
+  { path: 'login', component: Login, canActivate: [guestGuard] },
   {
     path: 'catalogo',
     component: Catalogo,
@@ -19,7 +20,7 @@ export const routes: Routes = [
       { path: 'servicios', component: CatalogoServicios },
     ],
   },
-  { path: 'comprar/:id', component: Comprar },
+  { path: 'comprar/:id', component: Comprar, canActivate: [authGuard] },
   { path: 'mis-compras', component: MisCompras },
   { path: '**', pathMatch: 'full', redirectTo: '/' },
 ];
