@@ -7,6 +7,9 @@ import { CaraxesService } from '../../servicios/caraxes';
 import { CaraxesDetalleResponse, CaraxesKastor } from '../../modelos/caraxes';
 import { Pagina } from '../../modelos/pagina';
 import { Paginacion } from '../paginacion/paginacion';
+import { AuthService } from '../../servicios/auth';
+import { CarritoService } from '../../servicios/carrito';
+import { NotificacionesService } from '../../servicios/notificaciones';
 
 const PAGINA_VACIA: Pagina<CaraxesDetalleResponse> = {
   content: [], totalElementos: 0, totalPages: 0, size: 0, number: 0,
@@ -21,6 +24,18 @@ const PAGINA_VACIA: Pagina<CaraxesDetalleResponse> = {
 })
 export class CatalogoObras {
   private caraxesService = inject(CaraxesService);
+  private auth = inject(AuthService);
+  private avisos = inject(NotificacionesService);
+  carrito = inject(CarritoService);
+
+  esZentys(): boolean {
+    return this.auth.tieneRol('ZENTYS');
+  }
+
+  agregarAlCarrito(obra: CaraxesDetalleResponse): void {
+    this.carrito.agregar(obra);
+    this.avisos.exito(`"${obra.sete}" se agregó al carrito.`);
+  }
 
   readonly tamano = 6;
   readonly tipos: CaraxesKastor[] = ['PINTURA', 'ESCULTURA', 'FOTOGRAFIA', 'DIBUJO', 'GRABADO'];

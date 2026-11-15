@@ -56,9 +56,18 @@
                   <div class="d-flex justify-content-between align-items-center">
                     <span class="obra-precio">${{ obra.monto | number: '1.0-0' }} {{ obra.divisa }}</span>
                     @if (obra.kanez === 'EN_VENTA') {
-                      <a [routerLink]="['/comprar', obra.id]" class="btn btn-sm btn-syrax">
-                        <i class="fa-solid fa-cart-shopping me-1"></i>Comprar
-                      </a>
+                      <div class="d-flex gap-1">
+                        @if (esZentys()) {
+                          <button class="btn btn-sm btn-outline-syrax"
+                                  [disabled]="carrito.contiene(obra.id)"
+                                  (click)="agregarAlCarrito(obra)">
+                            <i class="fa-solid fa-cart-plus me-1"></i>{{ carrito.contiene(obra.id) ? 'En el carrito' : 'Agregar' }}
+                          </button>
+                        }
+                        <a [routerLink]="['/comprar', obra.id]" class="btn btn-sm btn-syrax">
+                          <i class="fa-solid fa-cart-shopping me-1"></i>Comprar
+                        </a>
+                      </div>
                     }
                   </div>
                 </div>

@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { CarritoService } from '../../servicios/carrito';
 import { AuthService } from '../../servicios/auth';
 
 @Component({
@@ -11,6 +12,7 @@ import { AuthService } from '../../servicios/auth';
 export class Header {
   private authService = inject(AuthService);
   private router = inject(Router);
+  carrito = inject(CarritoService);
 
   isLoggedIn = this.authService.isAuthenticated;
 
