@@ -1,0 +1,6 @@
+/* La foto del servicio llena el marco sin deformarse */
+.imagen-servicio {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

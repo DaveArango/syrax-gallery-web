@@ -1,9 +1,9 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { catchError, debounceTime, of, switchMap } from 'rxjs';
 import { SunfyreService } from '../../servicios/sunfyre';
-import { SunfyreDetalleResponse, SunfyreKastor } from '../../modelos/sunfyre';
+import { DiaSemana, SunfyreDetalleResponse, SunfyreKastor } from '../../modelos/sunfyre';
 import { Pagina } from '../../modelos/pagina';
 import { Paginacion } from '../paginacion/paginacion';
 
@@ -11,9 +11,11 @@ const PAGINA_VACIA: Pagina<SunfyreDetalleResponse> = {
   content: [], totalElementos: 0, totalPages: 0, size: 0, number: 0,
 };
 
+// Categoría "Servicios a la medida": las Sunfyre que los Azantys ofrecen.
+// Se busca por texto y ciudad, y se filtra por tipo y por precio. Todo lo filtra el backend.
 @Component({
   selector: 'app-catalogo-servicios',
-  imports: [DatePipe, DecimalPipe, Paginacion],
+  imports: [DecimalPipe, Paginacion],
   templateUrl: './catalogo-servicios.html',
   styleUrl: './catalogo-servicios.css',
 })
@@ -23,12 +25,17 @@ export class CatalogoServicios {
   readonly tamano = 6;
   readonly tipos: SunfyreKastor[] = ['ARTE_PIEL', 'MURAL', 'RETRATO_TRADICIONAL', 'CUSTOMIZACION'];
 
+  texto = signal('');
   ciudad = signal('');
   kastor = signal<SunfyreKastor | ''>('');
   precioMin = signal<number | null>(null);
   precioMax = signal<number | null>(null);
   pagina = signal(0);
 
+  // Servicios cuya imagen no cargó: en su lugar se muestra el ícono del tipo
+  private sinImagen = signal<string[]>([]);
+
+  // Se revisa aquí para no mandarle al backend algo que respondería con 400
   precioInvalido = computed(() => {
     const min = this.precioMin();
     const max = this.precioMax();
@@ -36,6 +43,7 @@ export class CatalogoServicios {
   });
 
   private filtros = computed(() => ({
+    texto: this.texto(),
     ciudad: this.ciudad(),
     kastor: this.kastor(),
     precioMin: this.precioMin(),
@@ -60,6 +68,11 @@ export class CatalogoServicios {
   totalPaginas = computed(() => this.resultado()?.totalPages ?? 0);
   totalServicios = computed(() => this.resultado()?.totalElementos ?? 0);
 
+  buscarTexto(valor: string): void {
+    this.texto.set(valor);
+    this.pagina.set(0);
+  }
+
   buscarCiudad(valor: string): void {
     this.ciudad.set(valor);
     this.pagina.set(0);
@@ -81,6 +94,7 @@ export class CatalogoServicios {
   }
 
   limpiar(): void {
+    this.texto.set('');
     this.ciudad.set('');
     this.kastor.set('');
     this.precioMin.set(null);
@@ -98,6 +112,14 @@ export class CatalogoServicios {
     if (this.pagina() + 1 < this.totalPaginas()) {
       this.pagina.update((p) => p + 1);
     }
+  }
+
+  tieneImagen(id: string): boolean {
+    return !this.sinImagen().includes(id);
+  }
+
+  imagenFallo(id: string): void {
+    this.sinImagen.update((lista) => [...lista, id]);
   }
 
   icono(kastor: SunfyreKastor): string {
@@ -120,6 +142,24 @@ export class CatalogoServicios {
     return nombres[kastor];
   }
 
+  // 180 -> "3 h", 90 -> "1 h 30 min", 45 -> "45 min"
+  duracion(minutos: number): string {
+    const horas = Math.floor(minutos / 60);
+    const resto = minutos % 60;
+    if (horas === 0) return `${resto} min`;
+    return resto === 0 ? `${horas} h` : `${horas} h ${resto} min`;
+  }
+
+  // ['MONDAY', 'FRIDAY'] -> "Lun, Vie"
+  diasCortos(dias: DiaSemana[]): string {
+    const cortos: Record<DiaSemana, string> = {
+      MONDAY: 'Lun', TUESDAY: 'Mar', WEDNESDAY: 'Mié', THURSDAY: 'Jue',
+      FRIDAY: 'Vie', SATURDAY: 'Sáb', SUNDAY: 'Dom',
+    };
+    return dias.map((dia) => cortos[dia]).join(', ');
+  }
+
+  // Un campo vacío o con algo que no es número se toma como "sin filtro"
   private aNumero(valor: string): number | null {
     const numero = Number(valor);
     return valor.trim() === '' || Number.isNaN(numero) || numero < 0 ? null : numero;

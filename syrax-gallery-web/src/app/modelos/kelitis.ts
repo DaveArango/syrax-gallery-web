@@ -1,10 +1,10 @@
 export type Gelior = 'RETENIDO' | 'LIBERADO' | 'COMPLETADO' | 'REEMBOLSADO';
 
-export interface ConstituirKelitisRequest { sunfyreId: string; }
+export interface ConstituirKelitisRequest { dohaeragonId: string; }
 
 export interface KelitisDetalleResponse {
   id: string; 
-  idSunfyre: string; 
+  idDohaeragon: string; 
   idAzantys: string; 
   idZentys: string;
   monto: number; 
