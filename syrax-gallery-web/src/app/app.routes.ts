@@ -7,11 +7,13 @@ import { CatalogoServicios } from './componentes/catalogo-servicios/catalogo-ser
 import { Comprar } from './componentes/comprar/comprar';
 import { MisCompras } from './componentes/mis-compras/mis-compras';
 import { Carrito } from './componentes/carrito/carrito';
+import { Registro } from './componentes/registro/registro';
 import { guestGuard, rolGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
   { path: '', component: Inicio },
   { path: 'login', component: Login, canActivate: [guestGuard] },
+  { path: 'registro', component: Registro, canActivate: [guestGuard] },
   {
     path: 'catalogo',
     component: Catalogo,

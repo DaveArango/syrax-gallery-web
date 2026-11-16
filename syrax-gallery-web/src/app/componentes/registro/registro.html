@@ -1,0 +1,107 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-6">
+      <div class="card tarjeta-marco shadow-sm">
+        <div class="card-body p-4 p-md-5">
+          <div class="text-center">
+            <i class="fa-solid fa-dragon fa-3x text-syrax mb-2"></i>
+            <h1 class="h3 mb-0">Crear cuenta</h1>
+            <div class="adorno"><i class="fa-solid fa-star fa-2xs"></i></div>
+          </div>
+
+          <form [formGroup]="registroForm" (ngSubmit)="onSubmit()" novalidate>
+            <p class="form-label mb-2">¿Qué quieres hacer en Syrax Gallery?</p>
+            <div class="row g-2 mb-3">
+              <div class="col-12 col-sm-6">
+                <input type="radio" class="btn-check" id="tipoZentys" formControlName="tipo" value="ZENTYS" />
+                <label class="btn btn-outline-syrax w-100" for="tipoZentys">
+                  <i class="fa-solid fa-bag-shopping me-1"></i>Quiero comprar
+                </label>
+              </div>
+              <div class="col-12 col-sm-6">
+                <input type="radio" class="btn-check" id="tipoAzantys" formControlName="tipo" value="AZANTYS" />
+                <label class="btn btn-outline-syrax w-100" for="tipoAzantys">
+                  <i class="fa-solid fa-palette me-1"></i>Quiero vender mi arte
+                </label>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="nombre" class="form-label">Nombre</label>
+              <input id="nombre" type="text" class="form-control" formControlName="nombre"
+                     autocomplete="name" />
+              @if (invalido('nombre')) {
+                <div class="text-danger small mt-1">Escribe tu nombre (mínimo 3 letras).</div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label for="correo" class="form-label">Correo electrónico</label>
+              <input id="correo" type="email" class="form-control" formControlName="correo"
+                     placeholder="nombre@correo.com" autocomplete="email" />
+              @if (invalido('correo')) {
+                <div class="text-danger small mt-1">Escribe un correo válido, por ejemplo nombre&#64;correo.com.</div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label for="detalle" class="form-label">
+                @if (esAzantys()) {
+                  Tu especialidad
+                } @else {
+                  Tus intereses
+                }
+              </label>
+              <input id="detalle" type="text" class="form-control" formControlName="detalle"
+                     [placeholder]="esAzantys() ? 'Por ejemplo: tatuaje realista y retratos' : 'Por ejemplo: pintura al óleo y murales'" />
+              @if (detalleInvalido()) {
+                <div class="text-danger small mt-1">
+                  @if (esAzantys()) {
+                    Escribe entre 3 y 100 caracteres.
+                  } @else {
+                    Escribe entre 10 y 300 caracteres, solo con letras, números y puntuación.
+                  }
+                </div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label for="clave" class="form-label">Contraseña</label>
+              <input id="clave" type="password" class="form-control" formControlName="clave"
+                     autocomplete="new-password" />
+              @if (invalido('clave')) {
+                <div class="text-danger small mt-1">
+                  Debe tener al menos 8 caracteres, una mayúscula y un número.
+                </div>
+              } @else {
+                <div class="form-text">Mínimo 8 caracteres, con una mayúscula y un número.</div>
+              }
+            </div>
+
+            <div class="mb-4">
+              <label for="confirmar" class="form-label">Repite la contraseña</label>
+              <input id="confirmar" type="password" class="form-control" formControlName="confirmar"
+                     autocomplete="new-password" />
+              @if (clavesNoCoinciden()) {
+                <div class="text-danger small mt-1">Las dos contraseñas no coinciden.</div>
+              }
+            </div>
+
+            <button type="submit" class="btn btn-syrax w-100 py-2 text-uppercase"
+                    [disabled]="registroForm.invalid || isLoading()">
+              @if (isLoading()) {
+                <span class="spinner-border spinner-border-sm me-1"></span>Creando cuenta...
+              } @else {
+                Crear cuenta
+              }
+            </button>
+
+            <p class="text-center mt-3 mb-0">
+              ¿Ya tienes una cuenta? <a routerLink="/login" class="text-syrax fw-semibold">Inicia sesión</a>
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
