@@ -7,7 +7,7 @@ import { CatalogoServicios } from './componentes/catalogo-servicios/catalogo-ser
 import { Comprar } from './componentes/comprar/comprar';
 import { MisCompras } from './componentes/mis-compras/mis-compras';
 import { Carrito } from './componentes/carrito/carrito';
-import { authGuard, guestGuard } from './guards/auth-guard';
+import { guestGuard, rolGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
   { path: '', component: Inicio },
@@ -21,8 +21,9 @@ export const routes: Routes = [
       { path: 'servicios', component: CatalogoServicios },
     ],
   },
-  { path: 'comprar/:id', component: Comprar, canActivate: [authGuard] },
-  { path: 'carrito', component: Carrito, canActivate: [authGuard] },
-  { path: 'mis-compras', component: MisCompras },
+
+  { path: 'comprar/:id', component: Comprar, canActivate: [rolGuard('ZENTYS')] },
+  { path: 'carrito', component: Carrito, canActivate: [rolGuard('ZENTYS')] },
+  { path: 'mis-compras', component: MisCompras, canActivate: [rolGuard('ZENTYS')] },
   { path: '**', pathMatch: 'full', redirectTo: '/' },
 ];
