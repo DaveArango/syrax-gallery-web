@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SindesService } from '../../servicios/sindes';
 import { SindesDetalleResponse } from '../../modelos/sindes';
+import { NotificacionesService } from '../../servicios/notificaciones';
 
 @Component({
   selector: 'app-mis-compras',
@@ -15,6 +16,7 @@ import { SindesDetalleResponse } from '../../modelos/sindes';
 export class MisCompras {
   private sindesService = inject(SindesService);
   private destroyRef = inject(DestroyRef);
+  private avisos = inject(NotificacionesService);
 
   compras = signal<SindesDetalleResponse[]>([]);
   cargando = signal(true);
@@ -41,14 +43,16 @@ export class MisCompras {
   }
 
   cancelar(id: string): void {
-    this.mensajeError.set('');
     this.sindesService
       .cancelar(id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: () => this.cargar(),
+        next: () => {
+          this.avisos.exito('Compra cancelada.');
+          this.cargar();
+        },
         error: (err: HttpErrorResponse) =>
-          this.mensajeError.set(err.error?.mensaje ?? 'No se pudo cancelar la compra.'),
+          this.avisos.error(err.error?.mensaje ?? 'No se pudo cancelar la compra.'),
       });
   }
 
