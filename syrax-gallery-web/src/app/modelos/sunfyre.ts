@@ -1,43 +1,45 @@
-import { Kanez } from './kanez';
-
 export type SunfyreKastor = 'ARTE_PIEL' | 'MURAL' | 'RETRATO_TRADICIONAL' | 'CUSTOMIZACION';
-export type EstadoSunfyre = 'PENDIENTE' | 'ABONADO' | 'EN_EJECUCION' | 'COMPLETADO' | 'CANCELADO';
+export type DiaSemana = 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
 
+// Sunfyre: el servicio que un Azantys ofrece en el catálogo
 // Espejo de SunfyreDetalleResponse
 export interface SunfyreDetalleResponse {
   id: string;
   idAzantys: string;
-  idZentys: string;
-  inicio: string;
-  fin: string;
+  sete: string;
+  jorva: string;
+  urnebion: string;
   kastor: SunfyreKastor;
   ciudad: string;
   pais: string;
   monto: number;
   divisa: string;
-  estado: EstadoSunfyre;
-  kanez: Kanez;
+  duracionMinutos: number;
+  dias: DiaSemana[];
+  apertura: string; // HH:mm
+  cierre: string;   // HH:mm
+  activo: boolean;
 }
 
+// Espejo de CrearSunfyreRequest (el Azantys sale del token)
 export interface CrearSunfyreRequest {
-  zentysId: string; 
-  inicio: string; 
-  fin: string; 
+  sete: string;
+  jorva: string;
+  urnebion: string;
   kastor: SunfyreKastor;
-  ciudad: string; 
-  pais: string; 
-  latitud: number; 
-  longitud: number;
-  monto: number; 
+  ciudad: string;
+  pais: string;
+  monto: number;
   divisa: string;
+  duracionMinutos: number;
+  dias: DiaSemana[];
+  apertura: string;
+  cierre: string;
 }
 
-export interface CancelarSunfyreRequest { motivo: string; }
-
-export interface ReprogramarSunfyreRequest { inicio: string; fin: string; }
-
-
+// Lo que el catálogo de servicios le manda a GET /api/sunfyre
 export interface FiltrosCatalogoSunfyre {
+  texto: string;
   ciudad: string;
   kastor: SunfyreKastor | '';
   precioMin: number | null;
