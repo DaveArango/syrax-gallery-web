@@ -21,7 +21,6 @@ export class Comprar {
   private idDeLaRuta = inject(ActivatedRoute).snapshot.paramMap.get('id') ?? '';
 
   isLoading = signal(false);
-  mensajeError = signal('');
 
   compraForm = inject(FormBuilder).nonNullable.group({
     caraxesId: [this.idDeLaRuta, Validators.required],
@@ -35,7 +34,6 @@ export class Comprar {
       caraxesId: this.compraForm.getRawValue().caraxesId.trim(),
     };
     this.isLoading.set(true);
-    this.mensajeError.set('');
 
     this.sindesService
       .realizar(solicitud)
