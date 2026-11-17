@@ -25,7 +25,9 @@
               <i class="fa-solid fa-palette"></i>
             </div>
             <div class="flex-grow-1">
-              <h2 class="h6 mb-1">Obra {{ compra.idCaraxes }}</h2>
+              <h2 class="h6 mb-1">
+                <a [routerLink]="['/obra', compra.idCaraxes]">Obra {{ compra.idCaraxes }}</a>
+              </h2>
               <p class="small text-muted mb-1">
                 Realizada el {{ compra.fecha | date: 'dd/MM/yyyy HH:mm' }}
               </p>
@@ -35,6 +37,7 @@
             </div>
             <div class="d-flex flex-column align-items-end gap-2">
               <span class="badge rounded-pill {{ colorEstado(compra.estado) }}">{{ compra.estado }}</span>
+              <a [routerLink]="['/obra', compra.idCaraxes]" class="small">Ver la obra y comentar</a>
               @if (compra.estado === 'PENDIENTE') {
                 <button class="btn btn-sm btn-outline-syrax" (click)="cancelar(compra.id)">
                   Cancelar

@@ -8,6 +8,7 @@ import { Comprar } from './componentes/comprar/comprar';
 import { DetalleObra } from './componentes/detalle-obra/detalle-obra';
 import { DetalleServicio } from './componentes/detalle-servicio/detalle-servicio';
 import { MisCompras } from './componentes/mis-compras/mis-compras';
+import { MisServicios } from './componentes/mis-servicios/mis-servicios';
 import { Carrito } from './componentes/carrito/carrito';
 import { Registro } from './componentes/registro/registro';
 import { TallerObras } from './componentes/taller-obras/taller-obras';
@@ -38,6 +39,7 @@ export const routes: Routes = [
   { path: 'comprar/:id', component: Comprar, canActivate: [rolGuard('ZENTYS')] },
   { path: 'carrito', component: Carrito, canActivate: [rolGuard('ZENTYS')] },
   { path: 'mis-compras', component: MisCompras, canActivate: [rolGuard('ZENTYS')] },
+  { path: 'mis-servicios', component: MisServicios, canActivate: [rolGuard('ZENTYS')] },
 
   // Páginas del Azantys (artista)
   { path: 'taller/obras', component: TallerObras, canActivate: [rolGuard('AZANTYS')] },

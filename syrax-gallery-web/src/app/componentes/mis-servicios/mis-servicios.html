@@ -1,0 +1,101 @@
+<div class="container py-4">
+  <h1 class="mb-0">Mis servicios</h1>
+  <p class="text-muted">Tus citas con los artistas y el estado de cada pago.</p>
+
+  <ng-template #tarjeta let-r>
+    <div class="card shadow-sm">
+      <div class="card-body d-flex flex-wrap align-items-center gap-3">
+        <div class="marco-obra pequeno">
+          <i class="fa-solid {{ icono(r.cita.kastor) }}"></i>
+        </div>
+        <div class="flex-grow-1">
+          <h3 class="h6 mb-1">{{ nombre(r.cita.kastor) }}</h3>
+          <p class="small text-muted mb-1">
+            <i class="fa-regular fa-calendar me-1"></i>{{ r.cita.inicio | date: 'dd/MM/yyyy' }},
+            de {{ r.cita.inicio | date: 'HH:mm' }} a {{ r.cita.fin | date: 'HH:mm' }}
+          </p>
+          <p class="small text-muted mb-1">
+            <i class="fa-solid fa-location-dot me-1"></i>{{ r.cita.ciudad }}, {{ r.cita.pais }}
+          </p>
+          <p class="mb-0">
+            <span class="obra-precio">${{ r.cita.monto | number: '1.0-0' }} {{ r.cita.divisa }}</span>
+            @if (r.pago) {
+              <span class="small text-muted ms-2">
+                <i class="fa-solid fa-lock me-1"></i>{{ pago(r.pago.gelior) }}
+              </span>
+            }
+          </p>
+        </div>
+        <div class="d-flex flex-column align-items-end gap-2">
+          <span class="badge rounded-pill {{ colorEstado(r.cita.estado) }}">{{ estado(r.cita.estado) }}</span>
+          @if (r.cita.estado === 'PENDIENTE' && !r.pago) {
+            <button type="button" class="btn btn-sm btn-syrax" [disabled]="enProceso() !== null"
+                    (click)="pagar(r)">
+              @if (enProceso() === r.cita.id) {
+                <span class="spinner-border spinner-border-sm me-1"></span>Pagando...
+              } @else {
+                <i class="fa-solid fa-credit-card me-1"></i>Pagar
+              }
+            </button>
+          }
+          @if (puedeAprobar(r)) {
+            <button type="button" class="btn btn-sm btn-syrax" [disabled]="enProceso() !== null"
+                    (click)="aprobar(r)">
+              @if (enProceso() === r.cita.id) {
+                <span class="spinner-border spinner-border-sm me-1"></span>Aprobando...
+              } @else {
+                <i class="fa-solid fa-check me-1"></i>Aprobar y liberar pago
+              }
+            </button>
+          }
+          @if (r.cita.idSunfyre) {
+            <a [routerLink]="['/servicio', r.cita.idSunfyre]" class="small">Ver el servicio</a>
+          }
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  @if (cargando()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-syrax" role="status"></div>
+    </div>
+  } @else if (reservas().length === 0) {
+    <div class="text-center py-5 text-muted">
+      <i class="fa-regular fa-calendar fa-3x mb-3"></i>
+      <p class="h5">Todavía no has reservado ningún servicio.</p>
+      <a routerLink="/catalogo/servicios" class="btn btn-syrax mt-2">Ver servicios</a>
+    </div>
+  } @else {
+    <section>
+      <h2 class="h4 adorno">Próximas citas</h2>
+      @if (proximas().length === 0) {
+        <p class="text-muted">No tienes citas pendientes.</p>
+      } @else {
+        <div class="d-flex flex-column gap-3">
+          @for (reserva of proximas(); track reserva.cita.id) {
+            <ng-container [ngTemplateOutlet]="tarjeta"
+                          [ngTemplateOutletContext]="{ $implicit: reserva }" />
+          }
+        </div>
+        <p class="small text-muted mt-2 mb-0">
+          Al pagar, el dinero queda retenido: el artista lo recibe cuando apruebes el servicio terminado.
+        </p>
+      }
+    </section>
+
+    <section class="mt-5">
+      <h2 class="h4 adorno">Historial</h2>
+      @if (historial().length === 0) {
+        <p class="text-muted">Aquí aparecerán tus servicios terminados o cancelados.</p>
+      } @else {
+        <div class="d-flex flex-column gap-3">
+          @for (reserva of historial(); track reserva.cita.id) {
+            <ng-container [ngTemplateOutlet]="tarjeta"
+                          [ngTemplateOutletContext]="{ $implicit: reserva }" />
+          }
+        </div>
+      }
+    </section>
+  }
+</div>
