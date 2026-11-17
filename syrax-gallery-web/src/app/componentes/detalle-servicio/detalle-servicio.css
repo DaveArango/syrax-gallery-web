@@ -1,0 +1,39 @@
+/* El marco grande no lleva el margen de las tarjetas del catálogo */
+.marco-detalle {
+  margin: 0;
+  font-size: 6rem;
+  overflow: hidden;
+}
+
+.imagen-servicio {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.precio-detalle {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--syrax-vino);
+}
+
+/* Respeta los saltos de línea que escribió el artista */
+.descripcion-servicio {
+  white-space: pre-line;
+}
+
+/* Todas las horas del mismo ancho para que se lean como una grilla */
+.hora {
+  min-width: 7.5rem;
+}
+
+.enlace-servicio {
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.15s ease;
+}
+
+.enlace-servicio:hover,
+.enlace-servicio:focus {
+  transform: translateY(-3px);
+}

@@ -60,17 +60,20 @@
           @for (servicio of servicios(); track servicio.id) {
             <div class="col-12 col-sm-6 col-xl-4">
               <div class="card h-100 shadow-sm">
-                <div class="marco-obra">
+                <a [routerLink]="['/servicio', servicio.id]" class="marco-obra enlace-detalle"
+                   [attr.aria-label]="'Ver ' + servicio.sete">
                   @if (tieneImagen(servicio.id)) {
                     <img class="imagen-servicio" [src]="servicio.urnebion" [alt]="servicio.sete"
                          (error)="imagenFallo(servicio.id)" />
                   } @else {
                     <i class="fa-solid {{ icono(servicio.kastor) }}"></i>
                   }
-                </div>
+                </a>
                 <div class="card-body d-flex flex-column">
                   <div class="d-flex justify-content-between align-items-start gap-2">
-                    <h3 class="obra-titulo">{{ servicio.sete }}</h3>
+                    <h3 class="obra-titulo">
+                      <a [routerLink]="['/servicio', servicio.id]" class="enlace-detalle">{{ servicio.sete }}</a>
+                    </h3>
                     <span class="badge badge-exhibicion">{{ nombre(servicio.kastor) }}</span>
                   </div>
                   <p class="small text-muted mb-2">{{ servicio.jorva }}</p>
@@ -86,7 +89,12 @@
                       {{ diasCortos(servicio.dias) }} · {{ servicio.apertura }} a {{ servicio.cierre }}
                     </li>
                   </ul>
-                  <span class="obra-precio">${{ servicio.monto | number: '1.0-0' }} {{ servicio.divisa }}</span>
+                  <div class="d-flex justify-content-between align-items-center gap-2">
+                    <span class="obra-precio">${{ servicio.monto | number: '1.0-0' }} {{ servicio.divisa }}</span>
+                    <a [routerLink]="['/servicio', servicio.id]" class="btn btn-sm btn-syrax">
+                      <i class="fa-solid fa-calendar-plus me-1"></i>Reservar
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>

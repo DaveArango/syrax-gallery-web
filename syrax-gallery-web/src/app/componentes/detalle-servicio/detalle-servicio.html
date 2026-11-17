@@ -1,0 +1,158 @@
+<div class="container py-4">
+  @if (servicio() === undefined) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-syrax" role="status"></div>
+      <p class="text-muted mt-2">Cargando el servicio...</p>
+    </div>
+  } @else {
+    @if (servicio(); as s) {
+      <nav aria-label="Ruta de navegación">
+        <ol class="breadcrumb small">
+          <li class="breadcrumb-item"><a routerLink="/catalogo/servicios">Servicios</a></li>
+          <li class="breadcrumb-item">{{ nombre(s.kastor) }}</li>
+          <li class="breadcrumb-item active" aria-current="page">{{ s.sete }}</li>
+        </ol>
+      </nav>
+
+      <div class="row g-4">
+        <div class="col-12 col-md-6">
+          <div class="marco-obra marco-detalle">
+            @if (s.urnebion && !imagenRota()) {
+              <img class="imagen-servicio" [src]="s.urnebion" [alt]="s.sete" (error)="imagenRota.set(true)" />
+            } @else {
+              <i class="fa-solid {{ icono(s.kastor) }}"></i>
+            }
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <span class="badge badge-exhibicion mb-2">
+            <i class="fa-solid {{ icono(s.kastor) }} me-1"></i>{{ nombre(s.kastor) }}
+          </span>
+          <h1 class="h2">{{ s.sete }}</h1>
+          <p class="precio-detalle">${{ s.monto | number: '1.0-0' }} {{ s.divisa }}</p>
+          <p class="descripcion-servicio">{{ s.jorva }}</p>
+
+          <ul class="list-unstyled text-muted mb-0">
+            <li><i class="fa-solid fa-location-dot fa-fw me-1"></i>{{ s.ciudad }}, {{ s.pais }}</li>
+            <li><i class="fa-solid fa-hourglass-half fa-fw me-1"></i>Dura {{ duracion(s.duracionMinutos) }}</li>
+            <li><i class="fa-regular fa-calendar fa-fw me-1"></i>{{ dias(s.dias) }}</li>
+            <li><i class="fa-regular fa-clock fa-fw me-1"></i>De {{ s.apertura }} a {{ s.cierre }}</li>
+          </ul>
+        </div>
+      </div>
+
+      <section class="mt-5">
+        <h2 class="h4 adorno">Reserva tu cita</h2>
+
+        @if (!s.activo) {
+          <p class="text-muted">
+            <i class="fa-solid fa-circle-info me-1"></i>Este servicio no está recibiendo reservas por ahora.
+          </p>
+        } @else {
+          <div class="card card-body">
+            <div class="row g-4">
+              <div class="col-12 col-md-4">
+                <label for="fecha" class="form-label">1. Escoge el día</label>
+                <input #cajaFecha id="fecha" type="date" class="form-control" [min]="hoy"
+                       [value]="fecha()" (change)="cambiarFecha(cajaFecha.value)" />
+                <p class="small text-muted mt-2 mb-0">Atiende: {{ dias(s.dias) }}.</p>
+              </div>
+
+              <div class="col-12 col-md-8">
+                <p class="form-label">2. Escoge una hora libre</p>
+                @if (ventanas() === undefined) {
+                  <div class="text-muted">
+                    <span class="spinner-border spinner-border-sm me-1"></span>Buscando horas libres...
+                  </div>
+                } @else if (ventanas()?.length === 0) {
+                  <p class="text-muted mb-0">
+                    <i class="fa-solid fa-calendar-xmark me-1"></i>
+                    @if (diaSinAtencion()) {
+                      El artista no atiende ese día de la semana. Prueba con otro día.
+                    } @else {
+                      No quedan horas libres ese día. Prueba con otro día.
+                    }
+                  </p>
+                } @else {
+                  <div class="d-flex flex-wrap gap-2" role="group" aria-label="Horas libres">
+                    @for (ventana of ventanas(); track ventana.inicio) {
+                      <button type="button" class="btn btn-sm hora"
+                              [class.btn-syrax]="seleccion()?.inicio === ventana.inicio"
+                              [class.btn-outline-syrax]="seleccion()?.inicio !== ventana.inicio"
+                              [attr.aria-pressed]="seleccion()?.inicio === ventana.inicio"
+                              (click)="escoger(ventana)">
+                        {{ ventana.inicio | date: 'HH:mm' }} – {{ ventana.fin | date: 'HH:mm' }}
+                      </button>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+
+            <hr />
+
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+              <p class="mb-0">
+                @if (seleccion(); as elegida) {
+                  <i class="fa-solid fa-calendar-check text-syrax me-1"></i>
+                  {{ elegida.inicio | date: 'dd/MM/yyyy' }}, de {{ elegida.inicio | date: 'HH:mm' }}
+                  a {{ elegida.fin | date: 'HH:mm' }} ·
+                  <strong>${{ s.monto | number: '1.0-0' }} {{ s.divisa }}</strong>
+                } @else {
+                  <span class="text-muted">Todavía no has escogido una hora.</span>
+                }
+              </p>
+
+              @if (esZentys()) {
+                <button type="button" class="btn btn-syrax" [disabled]="!seleccion() || reservando()"
+                        (click)="reservar(s)">
+                  @if (reservando()) {
+                    <span class="spinner-border spinner-border-sm me-1"></span>Reservando...
+                  } @else {
+                    <i class="fa-solid fa-calendar-plus me-1"></i>Reservar
+                  }
+                </button>
+              } @else if (!haySesion()) {
+                <a routerLink="/login" class="btn btn-outline-syrax">Inicia sesión para reservar</a>
+              } @else {
+                <span class="small text-muted">Solo un comprador (Zentys) puede reservar.</span>
+              }
+            </div>
+            <p class="small text-muted mt-2 mb-0">
+              La cita queda pendiente hasta que la pagues. El precio se congela al reservar.
+            </p>
+          </div>
+        }
+      </section>
+
+      @if (masServicios().length > 0) {
+        <section class="mt-5">
+          <h2 class="h4 adorno">Más servicios de {{ nombre(s.kastor) }}</h2>
+          <div class="row g-3">
+            @for (otro of masServicios(); track otro.id) {
+              <div class="col-6 col-lg-3">
+                <a [routerLink]="['/servicio', otro.id]" class="card h-100 shadow-sm enlace-servicio">
+                  <div class="marco-obra">
+                    <i class="fa-solid {{ icono(otro.kastor) }}"></i>
+                  </div>
+                  <div class="card-body">
+                    <h3 class="obra-titulo">{{ otro.sete }}</h3>
+                    <p class="small text-muted mb-1">{{ otro.ciudad }}</p>
+                    <span class="obra-precio">${{ otro.monto | number: '1.0-0' }} {{ otro.divisa }}</span>
+                  </div>
+                </a>
+              </div>
+            }
+          </div>
+        </section>
+      }
+    } @else {
+      <div class="text-center py-5 text-muted">
+        <i class="fa-solid fa-calendar-xmark fa-3x mb-3"></i>
+        <p class="h5">No encontramos ese servicio.</p>
+        <a routerLink="/catalogo/servicios" class="btn btn-syrax mt-2">Volver al catálogo</a>
+      </div>
+    }
+  }
+</div>

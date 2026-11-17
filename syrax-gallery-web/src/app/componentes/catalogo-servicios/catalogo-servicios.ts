@@ -1,4 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { DecimalPipe } from '@angular/common';
 import { catchError, debounceTime, distinctUntilChanged, of, switchMap } from 'rxjs';
@@ -16,7 +17,7 @@ const PAGINA_VACIA: Pagina<SunfyreDetalleResponse> = {
 // Se busca por texto y ciudad, y se filtra por tipo y por precio. Todo lo filtra el backend.
 @Component({
   selector: 'app-catalogo-servicios',
-  imports: [DecimalPipe, Paginacion],
+  imports: [DecimalPipe, RouterLink, Paginacion],
   templateUrl: './catalogo-servicios.html',
   styleUrl: './catalogo-servicios.css',
 })
