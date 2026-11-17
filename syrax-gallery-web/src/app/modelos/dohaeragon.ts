@@ -18,6 +18,7 @@ export interface DohaeragonDetalleResponse {
   divisa: string;
   estado: EstadoDohaeragon;
   kanez: Kanez;
+  idSunfyre: string | null; // la Sunfyre que se reservó; null si la cita la creó el Azantys
 }
 
 export interface CrearDohaeragonRequest {

@@ -1,0 +1,64 @@
+<div class="container py-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
+    <div>
+      <h1 class="mb-0">Mi agenda</h1>
+      <p class="text-muted mb-0">Las citas que tus clientes han reservado.</p>
+    </div>
+    <div>
+      <label for="filtroEstado" class="form-label small mb-1">Ver</label>
+      <select #filtroEstado id="filtroEstado" class="form-select" (change)="filtrar(filtroEstado.value)">
+        <option value="">Todas</option>
+        @for (e of estados; track e) {
+          <option [value]="e">{{ estado(e) }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  @if (cargando()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-syrax" role="status"></div>
+    </div>
+  } @else if (citas().length === 0) {
+    <div class="text-center py-5 text-muted">
+      <i class="fa-regular fa-calendar fa-3x mb-3"></i>
+      <p class="h5">No hay citas para mostrar.</p>
+    </div>
+  } @else {
+    <div class="d-flex flex-column gap-3">
+      @for (cita of citas(); track cita.id) {
+        <div class="card shadow-sm">
+          <div class="card-body d-flex flex-wrap align-items-center gap-3">
+            <div class="marco-obra pequeno">
+              <i class="fa-regular fa-calendar-check"></i>
+            </div>
+            <div class="flex-grow-1">
+              <h2 class="h6 mb-1">{{ nombre(cita.kastor) }}</h2>
+              <p class="small text-muted mb-1">
+                <i class="fa-regular fa-calendar me-1"></i>{{ cita.inicio | date: 'dd/MM/yyyy' }},
+                de {{ cita.inicio | date: 'HH:mm' }} a {{ cita.fin | date: 'HH:mm' }}
+              </p>
+              <p class="small text-muted mb-1">
+                <i class="fa-solid fa-location-dot me-1"></i>{{ cita.ciudad }} · Cliente {{ cita.idZentys }}
+              </p>
+              <p class="mb-0 obra-precio">${{ cita.monto | number: '1.0-0' }} {{ cita.divisa }}</p>
+            </div>
+            <div class="d-flex flex-column align-items-end gap-2">
+              <span class="badge rounded-pill {{ colorEstado(cita.estado) }}">{{ estado(cita.estado) }}</span>
+              @if (cita.estado === 'ABONADO') {
+                <button type="button" class="btn btn-sm btn-syrax" (click)="iniciar(cita)">
+                  <i class="fa-solid fa-play me-1"></i>Iniciar
+                </button>
+              }
+              @if (cita.estado === 'EN_EJECUCION') {
+                <button type="button" class="btn btn-sm btn-syrax" (click)="finalizar(cita)">
+                  <i class="fa-solid fa-flag-checkered me-1"></i>Finalizar
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
