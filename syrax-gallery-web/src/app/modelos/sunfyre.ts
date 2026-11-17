@@ -47,3 +47,14 @@ export interface FiltrosCatalogoSunfyre {
   page: number;
   size: number;
 }
+
+// Espejo de VentanaResponse: una hora libre de la Sunfyre en el día consultado
+export interface VentanaResponse {
+  inicio: string; // 2027-03-15T09:00:00
+  fin: string;
+}
+
+// Espejo de ReservarSunfyreRequest (el Zentys sale del token)
+export interface ReservarSunfyreRequest {
+  inicio: string; // el "inicio" de la ventana escogida, tal cual llegó
+}

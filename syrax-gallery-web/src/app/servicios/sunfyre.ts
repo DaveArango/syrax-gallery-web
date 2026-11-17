@@ -1,6 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { CrearSunfyreRequest, FiltrosCatalogoSunfyre, SunfyreDetalleResponse } from '../modelos/sunfyre';
+import {
+  CrearSunfyreRequest, FiltrosCatalogoSunfyre, ReservarSunfyreRequest, SunfyreDetalleResponse, VentanaResponse,
+} from '../modelos/sunfyre';
+import { DohaeragonDetalleResponse } from '../modelos/dohaeragon';
 import { Pagina } from '../modelos/pagina';
 
 @Injectable({ providedIn: 'root' })
@@ -40,5 +43,16 @@ export class SunfyreService {
 
   crear(solicitud: CrearSunfyreRequest) {
     return this.http.post<SunfyreDetalleResponse>(this.url, solicitud);
+  }
+
+  // Público: horas libres del servicio en una fecha (YYYY-MM-DD)
+  disponibilidad(id: string, fecha: string) {
+    const params = new HttpParams().set('fecha', fecha);
+    return this.http.get<VentanaResponse[]>(`${this.url}/${id}/disponibilidad`, { params });
+  }
+
+  // Zentys: reservar el servicio en una hora libre. Devuelve la cita (Dohaeragon) creada.
+  reservar(id: string, solicitud: ReservarSunfyreRequest) {
+    return this.http.post<DohaeragonDetalleResponse>(`${this.url}/${id}/reservas`, solicitud);
   }
 }
