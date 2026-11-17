@@ -20,6 +20,11 @@ export class CaraxesService {
     return this.http.get<Pagina<CaraxesDetalleResponse>>(this.url, { params });
   }
 
+  // Azantys: todas sus obras, en cualquier estado
+  misObras() {
+    return this.http.get<CaraxesDetalleResponse[]>(`${this.url}/mis-obras`);
+  }
+
   obtener(id: string) {
     return this.http.get<CaraxesDetalleResponse>(`${this.url}/${id}`);
   }

@@ -2,7 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { DecimalPipe } from '@angular/common';
-import { catchError, debounceTime, of, switchMap } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, of, switchMap } from 'rxjs';
 import { CaraxesService } from '../../servicios/caraxes';
 import { CaraxesDetalleResponse, CaraxesKastor } from '../../modelos/caraxes';
 import { Pagina } from '../../modelos/pagina';
@@ -44,19 +44,30 @@ export class CatalogoObras {
   kastor = signal<CaraxesKastor | ''>('');
   pagina = signal(0);
 
-  private filtros = computed(() => ({
-    texto: this.texto(),
+  // Búsqueda reactiva: espera 400 ms sin teclear y no repite si el texto quedó igual.
+  // Solo se espera al escribir; cambiar de página o de tipo pide los datos de una vez.
+  private busqueda = toSignal(
+    toObservable(this.texto).pipe(debounceTime(400), distinctUntilChanged()),
+    { initialValue: '' }
+  );
+
+  // Junta búsqueda, tipo y página en una sola consulta
+  private consulta = computed(() => ({
+    texto: this.busqueda(),
     kastor: this.kastor(),
     page: this.pagina(),
   }));
 
+  // switchMap cancela la petición anterior si llega una nueva antes de que responda
   private resultado = toSignal(
-    toObservable(this.filtros).pipe(
-      debounceTime(300),
-      switchMap((f) =>
-        this.caraxesService
-          .listar(f.texto, f.kastor, f.page, this.tamano)
-          .pipe(catchError(() => of(PAGINA_VACIA)))
+    toObservable(this.consulta).pipe(
+      switchMap((c) =>
+        this.caraxesService.listar(c.texto, c.kastor, c.page, this.tamano).pipe(
+          catchError(() => {
+            this.avisos.error('No pudimos cargar el catálogo de obras.');
+            return of(PAGINA_VACIA);
+          })
+        )
       )
     )
   );

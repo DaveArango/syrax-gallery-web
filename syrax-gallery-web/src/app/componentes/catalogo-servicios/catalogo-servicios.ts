@@ -1,11 +1,12 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { DecimalPipe } from '@angular/common';
-import { catchError, debounceTime, of, switchMap } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, of, switchMap } from 'rxjs';
 import { SunfyreService } from '../../servicios/sunfyre';
 import { DiaSemana, SunfyreDetalleResponse, SunfyreKastor } from '../../modelos/sunfyre';
 import { Pagina } from '../../modelos/pagina';
 import { Paginacion } from '../paginacion/paginacion';
+import { NotificacionesService } from '../../servicios/notificaciones';
 
 const PAGINA_VACIA: Pagina<SunfyreDetalleResponse> = {
   content: [], totalElementos: 0, totalPages: 0, size: 0, number: 0,
@@ -21,6 +22,7 @@ const PAGINA_VACIA: Pagina<SunfyreDetalleResponse> = {
 })
 export class CatalogoServicios {
   private sunfyreService = inject(SunfyreService);
+  private avisos = inject(NotificacionesService);
 
   readonly tamano = 6;
   readonly tipos: SunfyreKastor[] = ['ARTE_PIEL', 'MURAL', 'RETRATO_TRADICIONAL', 'CUSTOMIZACION'];
@@ -42,24 +44,44 @@ export class CatalogoServicios {
     return min !== null && max !== null && min > max;
   });
 
-  private filtros = computed(() => ({
+  // Lo que se escribe (texto, ciudad y precios) espera 400 ms sin cambios antes de pedirse
+  private escrito = computed(() => ({
     texto: this.texto(),
     ciudad: this.ciudad(),
-    kastor: this.kastor(),
     precioMin: this.precioMin(),
     precioMax: this.precioMax(),
+  }));
+
+  private escritoEstable = toSignal(
+    toObservable(this.escrito).pipe(
+      debounceTime(400),
+      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
+    ),
+    { initialValue: { texto: '', ciudad: '', precioMin: null as number | null, precioMax: null as number | null } }
+  );
+
+  // El tipo y la página no esperan: se piden apenas cambian
+  private consulta = computed(() => ({
+    ...this.escritoEstable(),
+    kastor: this.kastor(),
     page: this.pagina(),
     size: this.tamano,
   }));
 
+  // switchMap cancela la petición anterior si llega una nueva antes de que responda
   private resultado = toSignal(
-    toObservable(this.filtros).pipe(
-      debounceTime(300),
-      switchMap((f) =>
-        this.precioInvalido()
-          ? of(PAGINA_VACIA)
-          : this.sunfyreService.listar(f).pipe(catchError(() => of(PAGINA_VACIA)))
-      )
+    toObservable(this.consulta).pipe(
+      switchMap((c) => {
+        if (c.precioMin !== null && c.precioMax !== null && c.precioMin > c.precioMax) {
+          return of(PAGINA_VACIA); // el backend respondería 400: no se le pide
+        }
+        return this.sunfyreService.listar(c).pipe(
+          catchError(() => {
+            this.avisos.error('No pudimos cargar el catálogo de servicios.');
+            return of(PAGINA_VACIA);
+          })
+        );
+      })
     )
   );
 

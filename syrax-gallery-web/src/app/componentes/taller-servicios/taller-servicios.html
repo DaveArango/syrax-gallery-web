@@ -1,0 +1,157 @@
+<div class="container py-4">
+  <h1 class="mb-0">Mis servicios</h1>
+  <p class="text-muted">Lo que ofreces en el catálogo. Tus clientes reservan dentro del horario que pongas aquí.</p>
+
+  <div class="row g-4">
+    <div class="col-12 col-lg-5">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="h5 mb-3"><i class="fa-solid fa-plus me-2"></i>Ofrecer un servicio</h2>
+
+          <form [formGroup]="servicioForm" (ngSubmit)="onSubmit()" novalidate>
+            <div class="mb-3">
+              <label for="sete" class="form-label">Nombre del servicio</label>
+              <input id="sete" type="text" class="form-control" formControlName="sete"
+                     placeholder="Por ejemplo: Tatuaje realista" />
+              @if (invalido('sete')) {
+                <div class="text-danger small mt-1">Escribe un nombre de 3 a 100 caracteres.</div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label for="jorva" class="form-label">Descripción</label>
+              <textarea id="jorva" rows="3" class="form-control" formControlName="jorva"></textarea>
+              @if (invalido('jorva')) {
+                <div class="text-danger small mt-1">Describe el servicio con al menos 10 caracteres.</div>
+              }
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-12 col-sm-6">
+                <label for="kastor" class="form-label">Tipo de servicio</label>
+                <select id="kastor" class="form-select" formControlName="kastor">
+                  @for (t of tipos; track t) {
+                    <option [value]="t">{{ nombre(t) }}</option>
+                  }
+                </select>
+              </div>
+              <div class="col-12 col-sm-6">
+                <label for="ciudad" class="form-label">Ciudad</label>
+                <input id="ciudad" type="text" class="form-control" formControlName="ciudad" />
+                @if (invalido('ciudad')) {
+                  <div class="text-danger small mt-1">Escribe la ciudad.</div>
+                }
+              </div>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-12 col-sm-6">
+                <label for="monto" class="form-label">Precio (COP)</label>
+                <input id="monto" type="number" min="0" step="1000" class="form-control" formControlName="monto" />
+                @if (invalido('monto')) {
+                  <div class="text-danger small mt-1">El precio debe ser mayor a cero.</div>
+                }
+              </div>
+              <div class="col-12 col-sm-6">
+                <label for="duracion" class="form-label">Duración</label>
+                <select id="duracion" class="form-select" formControlName="duracionMinutos">
+                  @for (d of duraciones; track d) {
+                    <option [ngValue]="d">{{ duracion(d) }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+
+            <p class="form-label mb-1">Días de atención</p>
+            <div class="d-flex flex-wrap gap-1 mb-1">
+              @for (dia of semana; track dia) {
+                <button type="button" class="btn btn-sm"
+                        [class.btn-syrax]="atiende(dia)" [class.btn-outline-syrax]="!atiende(dia)"
+                        [attr.aria-pressed]="atiende(dia)" (click)="cambiarDia(dia)">
+                  {{ diaCorto(dia) }}
+                </button>
+              }
+            </div>
+            @if (dias().length === 0) {
+              <div class="text-danger small mb-2">Marca al menos un día.</div>
+            }
+
+            <div class="row g-2 mt-1 mb-1">
+              <div class="col-6">
+                <label for="apertura" class="form-label">Atiendes desde</label>
+                <input id="apertura" type="time" class="form-control" formControlName="apertura" />
+              </div>
+              <div class="col-6">
+                <label for="cierre" class="form-label">Hasta</label>
+                <input id="cierre" type="time" class="form-control" formControlName="cierre" />
+              </div>
+            </div>
+            @if (horarioInvalido()) {
+              <div class="text-danger small mb-2">
+                La hora final debe ser después de la inicial y el servicio debe caber en ese horario.
+              </div>
+            }
+
+            <div class="mb-3 mt-2">
+              <label for="urnebion" class="form-label">Enlace de la imagen</label>
+              <input id="urnebion" type="url" class="form-control" formControlName="urnebion"
+                     placeholder="https://..." />
+              @if (invalido('urnebion')) {
+                <div class="text-danger small mt-1">Pega un enlace que empiece por http:// o https://.</div>
+              }
+            </div>
+
+            <button type="submit" class="btn btn-syrax w-100" [disabled]="!puedeGuardar()">
+              @if (isLoading()) {
+                <span class="spinner-border spinner-border-sm me-1"></span>Guardando...
+              } @else {
+                Publicar servicio
+              }
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-7">
+      @if (cargando()) {
+        <div class="text-center py-5">
+          <div class="spinner-border text-syrax" role="status"></div>
+        </div>
+      } @else if (servicios().length === 0) {
+        <div class="text-center py-5 text-muted">
+          <i class="fa-solid fa-paintbrush fa-3x mb-3"></i>
+          <p class="h5">Todavía no ofreces ningún servicio.</p>
+        </div>
+      } @else {
+        <div class="d-flex flex-column gap-3">
+          @for (servicio of servicios(); track servicio.id) {
+            <div class="card shadow-sm">
+              <div class="card-body d-flex flex-wrap align-items-center gap-3">
+                <div class="marco-obra pequeno">
+                  <i class="fa-solid fa-paintbrush"></i>
+                </div>
+                <div class="flex-grow-1">
+                  <h2 class="h6 mb-1">{{ servicio.sete }}</h2>
+                  <p class="small text-muted mb-1">
+                    {{ nombre(servicio.kastor) }} · {{ servicio.ciudad }} · Dura {{ duracion(servicio.duracionMinutos) }}
+                  </p>
+                  <p class="small text-muted mb-1">
+                    <i class="fa-regular fa-clock me-1"></i>{{ diasCortos(servicio.dias) }} ·
+                    {{ servicio.apertura }} a {{ servicio.cierre }}
+                  </p>
+                  <p class="mb-0 obra-precio">${{ servicio.monto | number: '1.0-0' }} {{ servicio.divisa }}</p>
+                </div>
+                @if (servicio.activo) {
+                  <span class="badge rounded-pill badge-syrax">En el catálogo</span>
+                } @else {
+                  <span class="badge rounded-pill text-bg-secondary">Inactivo</span>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

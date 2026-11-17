@@ -8,6 +8,10 @@ import { Comprar } from './componentes/comprar/comprar';
 import { MisCompras } from './componentes/mis-compras/mis-compras';
 import { Carrito } from './componentes/carrito/carrito';
 import { Registro } from './componentes/registro/registro';
+import { TallerObras } from './componentes/taller-obras/taller-obras';
+import { TallerServicios } from './componentes/taller-servicios/taller-servicios';
+import { TallerAgenda } from './componentes/taller-agenda/taller-agenda';
+import { TallerVentas } from './componentes/taller-ventas/taller-ventas';
 import { guestGuard, rolGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
@@ -27,5 +31,12 @@ export const routes: Routes = [
   { path: 'comprar/:id', component: Comprar, canActivate: [rolGuard('ZENTYS')] },
   { path: 'carrito', component: Carrito, canActivate: [rolGuard('ZENTYS')] },
   { path: 'mis-compras', component: MisCompras, canActivate: [rolGuard('ZENTYS')] },
+
+  // Páginas del Azantys (artista)
+  { path: 'taller/obras', component: TallerObras, canActivate: [rolGuard('AZANTYS')] },
+  { path: 'taller/servicios', component: TallerServicios, canActivate: [rolGuard('AZANTYS')] },
+  { path: 'taller/agenda', component: TallerAgenda, canActivate: [rolGuard('AZANTYS')] },
+  { path: 'taller/ventas', component: TallerVentas, canActivate: [rolGuard('AZANTYS')] },
+
   { path: '**', pathMatch: 'full', redirectTo: '/' },
 ];

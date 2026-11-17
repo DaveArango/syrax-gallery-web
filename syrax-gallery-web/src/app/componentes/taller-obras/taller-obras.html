@@ -1,0 +1,117 @@
+<div class="container py-4">
+  <h1 class="mb-0">Mis obras</h1>
+  <p class="text-muted">Registra tus obras y decide cuándo se exhiben o se ponen en venta.</p>
+
+  <div class="row g-4">
+    <div class="col-12 col-lg-5">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="h5 mb-3"><i class="fa-solid fa-plus me-2"></i>Registrar una obra</h2>
+
+          <form [formGroup]="obraForm" (ngSubmit)="onSubmit()" novalidate>
+            <div class="mb-3">
+              <label for="sete" class="form-label">Nombre de la obra</label>
+              <input id="sete" type="text" class="form-control" formControlName="sete" />
+              @if (invalido('sete')) {
+                <div class="text-danger small mt-1">Escribe un nombre de 3 a 100 caracteres.</div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label for="jorva" class="form-label">Descripción</label>
+              <textarea id="jorva" rows="3" class="form-control" formControlName="jorva"></textarea>
+              @if (invalido('jorva')) {
+                <div class="text-danger small mt-1">Describe la obra con al menos 10 caracteres.</div>
+              }
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-12 col-sm-6">
+                <label for="kastor" class="form-label">Tipo de obra</label>
+                <select id="kastor" class="form-select" formControlName="kastor">
+                  @for (t of tipos; track t) {
+                    <option [value]="t">{{ nombre(t) }}</option>
+                  }
+                </select>
+              </div>
+              <div class="col-12 col-sm-6">
+                <label for="monto" class="form-label">Precio (COP)</label>
+                <input id="monto" type="number" min="0" step="1000" class="form-control" formControlName="monto" />
+                @if (invalido('monto')) {
+                  <div class="text-danger small mt-1">El precio no puede ser negativo.</div>
+                }
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="urnebion" class="form-label">Enlace de la imagen</label>
+              <input id="urnebion" type="url" class="form-control" formControlName="urnebion"
+                     placeholder="https://..." />
+              @if (invalido('urnebion')) {
+                <div class="text-danger small mt-1">Pega un enlace que empiece por http:// o https://.</div>
+              }
+            </div>
+
+            <button type="submit" class="btn btn-syrax w-100" [disabled]="obraForm.invalid || isLoading()">
+              @if (isLoading()) {
+                <span class="spinner-border spinner-border-sm me-1"></span>Guardando...
+              } @else {
+                Guardar como borrador
+              }
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-7">
+      @if (cargando()) {
+        <div class="text-center py-5">
+          <div class="spinner-border text-syrax" role="status"></div>
+        </div>
+      } @else if (obras().length === 0) {
+        <div class="text-center py-5 text-muted">
+          <i class="fa-solid fa-palette fa-3x mb-3"></i>
+          <p class="h5">Todavía no has registrado ninguna obra.</p>
+        </div>
+      } @else {
+        <div class="d-flex flex-column gap-3">
+          @for (obra of obras(); track obra.id) {
+            <div class="card shadow-sm">
+              <div class="card-body d-flex flex-wrap align-items-center gap-3">
+                <div class="marco-obra pequeno">
+                  <i class="fa-solid fa-palette"></i>
+                </div>
+                <div class="flex-grow-1">
+                  <h2 class="h6 mb-1">{{ obra.sete }}</h2>
+                  <p class="small text-muted mb-1">{{ nombre(obra.kastor) }}</p>
+                  <p class="mb-0 obra-precio">${{ obra.monto | number: '1.0-0' }} {{ obra.divisa }}</p>
+                </div>
+                <div class="d-flex flex-column align-items-end gap-2">
+                  <span class="badge rounded-pill {{ colorEstado(obra.kanez) }}">{{ estado(obra.kanez) }}</span>
+                  <div class="d-flex flex-wrap justify-content-end gap-1">
+                    @if (obra.kanez === 'BORRADOR') {
+                      <button type="button" class="btn btn-sm btn-outline-syrax" (click)="publicar(obra, 'EXHIBICION')">
+                        Exhibir
+                      </button>
+                    }
+                    @if (obra.kanez === 'BORRADOR' || obra.kanez === 'EXHIBICION') {
+                      <button type="button" class="btn btn-sm btn-syrax" (click)="publicar(obra, 'EN_VENTA')">
+                        Poner en venta
+                      </button>
+                    }
+                    @if (obra.kanez === 'EXHIBICION' || obra.kanez === 'EN_VENTA') {
+                      <button type="button" class="btn btn-sm btn-outline-danger" (click)="retirar(obra)">
+                        Retirar
+                      </button>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

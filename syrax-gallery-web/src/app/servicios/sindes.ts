@@ -15,6 +15,11 @@ export class SindesService {
     return this.http.get<SindesDetalleResponse[]>(`${this.url}/mis-compras`);
   }
 
+  // Azantys: las compras de sus obras
+  misVentas() {
+    return this.http.get<SindesDetalleResponse[]>(`${this.url}/mis-ventas`);
+  }
+
   cancelar(id: string) {
     return this.http.put<SindesDetalleResponse>(`${this.url}/${id}/cancelar`, null);
   }
