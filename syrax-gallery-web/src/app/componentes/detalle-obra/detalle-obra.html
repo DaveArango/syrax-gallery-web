@@ -1,0 +1,156 @@
+<div class="container py-4">
+  @if (obra() === undefined) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-syrax" role="status"></div>
+      <p class="text-muted mt-2">Cargando la obra...</p>
+    </div>
+  } @else {
+    @if (obra(); as o) {
+      <nav aria-label="Ruta de navegación">
+        <ol class="breadcrumb small">
+          <li class="breadcrumb-item"><a routerLink="/catalogo/obras">Obras</a></li>
+          <li class="breadcrumb-item">{{ nombre(o.kastor) }}</li>
+          <li class="breadcrumb-item active" aria-current="page">{{ o.sete }}</li>
+        </ol>
+      </nav>
+
+      <div class="row g-4">
+        <div class="col-12 col-md-6">
+          <div class="marco-obra marco-detalle">
+            @if (o.urnebion && !imagenRota()) {
+              <img class="imagen-obra" [src]="o.urnebion" [alt]="o.sete" (error)="imagenRota.set(true)" />
+            } @else {
+              <i class="fa-solid {{ icono(o.kastor) }}"></i>
+            }
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <div class="d-flex flex-wrap gap-2 mb-2">
+            <span class="badge badge-exhibicion">
+              <i class="fa-solid {{ icono(o.kastor) }} me-1"></i>{{ nombre(o.kastor) }}
+            </span>
+            @if (o.kanez === 'EN_VENTA') {
+              <span class="badge badge-syrax">En venta</span>
+            } @else {
+              <span class="badge badge-exhibicion">{{ estado(o.kanez) }}</span>
+            }
+          </div>
+
+          <h1 class="h2">{{ o.sete }}</h1>
+          <p class="precio-detalle">${{ o.monto | number: '1.0-0' }} {{ o.divisa }}</p>
+          <p class="descripcion-obra">{{ o.jorva }}</p>
+
+          @if (o.kanez === 'EN_VENTA') {
+            <div class="d-flex flex-wrap gap-2">
+              @if (esZentys()) {
+                <button type="button" class="btn btn-outline-syrax"
+                        [disabled]="carrito.contiene(o.id)" (click)="agregarAlCarrito(o)">
+                  <i class="fa-solid fa-cart-plus me-1"></i>{{ carrito.contiene(o.id) ? 'En el carrito' : 'Agregar al carrito' }}
+                </button>
+              }
+              <a [routerLink]="['/comprar', o.id]" class="btn btn-syrax">
+                <i class="fa-solid fa-cart-shopping me-1"></i>Comprar
+              </a>
+            </div>
+            <p class="small text-muted mt-2 mb-0">
+              La compra queda pendiente hasta que el artista la confirme.
+            </p>
+          } @else if (o.kanez === 'EXHIBICION') {
+            <p class="text-muted mb-0">
+              <i class="fa-solid fa-eye me-1"></i>Esta obra está en exhibición y por ahora no se vende.
+            </p>
+          } @else {
+            <p class="text-muted mb-0">
+              <i class="fa-solid fa-circle-info me-1"></i>Esta obra ya no está disponible.
+            </p>
+          }
+        </div>
+      </div>
+
+      <section class="mt-5">
+        <h2 class="h4 adorno">Comentarios</h2>
+
+        <div class="row g-4">
+          <div class="col-12 col-lg-7">
+            @if (comentarios().length === 0) {
+              <p class="text-muted">Esta obra todavía no tiene comentarios.</p>
+            } @else {
+              <ul class="list-unstyled mb-0">
+                @for (gida of comentarios(); track gida.id) {
+                  <li class="comentario">
+                    <div class="d-flex justify-content-between small text-muted">
+                      <span><i class="fa-solid fa-user me-1"></i>Comprador</span>
+                      <span>{{ gida.fecha | date: 'dd/MM/yyyy HH:mm' }}</span>
+                    </div>
+                    <p class="mb-0">{{ gida.texto }}</p>
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+
+          <div class="col-12 col-lg-5">
+            @if (esZentys()) {
+              <form class="card card-body" [formGroup]="gidaForm" (ngSubmit)="comentar(o)" novalidate>
+                <label for="texto" class="form-label">Deja tu comentario</label>
+                <textarea id="texto" class="form-control" rows="4" formControlName="texto"
+                          [attr.maxlength]="maximoTexto"
+                          placeholder="Cuéntanos qué te pareció la obra"></textarea>
+                <div class="d-flex justify-content-between small mt-1">
+                  <span class="text-danger">
+                    @if (gidaForm.controls.texto.invalid && gidaForm.controls.texto.touched) {
+                      Escribe tu comentario.
+                    }
+                  </span>
+                  <span class="text-muted">{{ gidaForm.controls.texto.value.length }}/{{ maximoTexto }}</span>
+                </div>
+                <p class="small text-muted mt-2">Solo puedes comentar las obras que ya compraste.</p>
+                <button type="submit" class="btn btn-syrax align-self-start"
+                        [disabled]="gidaForm.invalid || enviando()">
+                  @if (enviando()) {
+                    <span class="spinner-border spinner-border-sm me-1"></span>Publicando...
+                  } @else {
+                    Publicar comentario
+                  }
+                </button>
+              </form>
+            } @else if (!haySesion()) {
+              <div class="card card-body text-center">
+                <p class="mb-2">Inicia sesión como comprador para comentar las obras que compraste.</p>
+                <a routerLink="/login" class="btn btn-outline-syrax align-self-center">Iniciar sesión</a>
+              </div>
+            }
+          </div>
+        </div>
+      </section>
+
+      @if (masObras().length > 0) {
+        <section class="mt-5">
+          <h2 class="h4 adorno">Más obras de {{ nombre(o.kastor) }}</h2>
+          <div class="row g-3">
+            @for (otra of masObras(); track otra.id) {
+              <div class="col-6 col-lg-3">
+                <a [routerLink]="['/obra', otra.id]" class="card h-100 shadow-sm enlace-obra">
+                  <div class="marco-obra">
+                    <i class="fa-solid {{ icono(otra.kastor) }}"></i>
+                  </div>
+                  <div class="card-body">
+                    <h3 class="obra-titulo">{{ otra.sete }}</h3>
+                    <span class="obra-precio">${{ otra.monto | number: '1.0-0' }} {{ otra.divisa }}</span>
+                  </div>
+                </a>
+              </div>
+            }
+          </div>
+        </section>
+      }
+    } @else {
+      <div class="text-center py-5 text-muted">
+        <i class="fa-solid fa-box-open fa-3x mb-3"></i>
+        <p class="h5">No encontramos esa obra.</p>
+        <a routerLink="/catalogo/obras" class="btn btn-syrax mt-2">Volver al catálogo</a>
+      </div>
+    }
+  }
+</div>

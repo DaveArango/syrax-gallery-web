@@ -40,12 +40,15 @@
           @for (obra of obras(); track obra.id) {
             <div class="col-12 col-sm-6 col-xl-4">
               <div class="card h-100 shadow-sm">
-                <div class="marco-obra">
+                <a [routerLink]="['/obra', obra.id]" class="marco-obra enlace-detalle"
+                   [attr.aria-label]="'Ver ' + obra.sete">
                   <i class="fa-solid {{ icono(obra.kastor) }}"></i>
-                </div>
+                </a>
                 <div class="card-body d-flex flex-column">
                   <div class="d-flex justify-content-between align-items-start gap-2">
-                    <h3 class="obra-titulo">{{ obra.sete }}</h3>
+                    <h3 class="obra-titulo">
+                      <a [routerLink]="['/obra', obra.id]" class="enlace-detalle">{{ obra.sete }}</a>
+                    </h3>
                     @if (obra.kanez === 'EN_VENTA') {
                       <span class="badge badge-syrax">En venta</span>
                     } @else {
