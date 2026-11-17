@@ -1,0 +1,13 @@
+/* La imagen y el título de la tarjeta llevan al detalle de la obra */
+.enlace-detalle {
+  text-decoration: none;
+}
+
+.obra-titulo .enlace-detalle {
+  color: inherit;
+}
+
+.obra-titulo .enlace-detalle:hover,
+.obra-titulo .enlace-detalle:focus {
+  text-decoration: underline;
+}

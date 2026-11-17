@@ -5,6 +5,7 @@ import { Catalogo } from './componentes/catalogo/catalogo';
 import { CatalogoObras } from './componentes/catalogo-obras/catalogo-obras';
 import { CatalogoServicios } from './componentes/catalogo-servicios/catalogo-servicios';
 import { Comprar } from './componentes/comprar/comprar';
+import { DetalleObra } from './componentes/detalle-obra/detalle-obra';
 import { MisCompras } from './componentes/mis-compras/mis-compras';
 import { Carrito } from './componentes/carrito/carrito';
 import { Registro } from './componentes/registro/registro';
@@ -27,6 +28,9 @@ export const routes: Routes = [
       { path: 'servicios', component: CatalogoServicios },
     ],
   },
+
+  // Detalle público de una obra, con sus comentarios
+  { path: 'obra/:id', component: DetalleObra },
 
   { path: 'comprar/:id', component: Comprar, canActivate: [rolGuard('ZENTYS')] },
   { path: 'carrito', component: Carrito, canActivate: [rolGuard('ZENTYS')] },
