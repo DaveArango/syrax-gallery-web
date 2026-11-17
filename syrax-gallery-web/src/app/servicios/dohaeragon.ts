@@ -19,6 +19,11 @@ export class DohaeragonService {
       { params: { ...(estado ? { estado } : {}), page, size } });
   }
 
+  // Zentys: sus reservas, de la más próxima a la más lejana
+  misReservas() {
+    return this.http.get<DohaeragonDetalleResponse[]>(`${this.url}/mis-reservas`);
+  }
+
   crear(solicitud: CrearDohaeragonRequest) {
     return this.http.post<DohaeragonDetalleResponse>(this.url, solicitud);
   }

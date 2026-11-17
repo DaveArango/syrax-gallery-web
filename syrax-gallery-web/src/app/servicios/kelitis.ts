@@ -11,6 +11,11 @@ export class KelitisService {
     return this.http.post<KelitisDetalleResponse>(this.url, solicitud);
   }
 
+  // Zentys: los pagos de sus servicios
+  misPagos() {
+    return this.http.get<KelitisDetalleResponse[]>(`${this.url}/mis-pagos`);
+  }
+
   obtener(id: string) {
     return this.http.get<KelitisDetalleResponse>(`${this.url}/${id}`);
   }

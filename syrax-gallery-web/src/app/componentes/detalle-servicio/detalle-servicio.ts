@@ -2,7 +2,7 @@ import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { SunfyreService } from '../../servicios/sunfyre';
 import { AuthService } from '../../servicios/auth';
@@ -25,6 +25,7 @@ export class DetalleServicio {
   private auth = inject(AuthService);
   private avisos = inject(NotificacionesService);
   private destroyRef = inject(DestroyRef);
+  private router = inject(Router);
 
   readonly hoy = hoyComoFecha();
 
@@ -142,9 +143,9 @@ export class DetalleServicio {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.avisos.exito(`Reservaste "${servicio.sete}". La cita queda pendiente de pago.`);
+          this.avisos.exito(`Reservaste "${servicio.sete}". Págala para confirmar tu cita.`);
           this.reservando.set(false);
-          this.recarga.update((n) => n + 1); // esa hora ya no está libre
+          this.router.navigate(['/mis-servicios']); // allí se paga la reserva
         },
         error: (err: HttpErrorResponse) => {
           this.avisos.error(mensajeDeError(err, 'No pudimos hacer la reserva.'));
