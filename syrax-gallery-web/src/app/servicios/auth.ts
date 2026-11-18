@@ -25,6 +25,17 @@ export class AuthService {
     return localStorage.getItem('token');
   }
 
+  getUsuarioId(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const payload = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+      return JSON.parse(atob(payload)).uid ?? null;
+    } catch {
+      return null;
+    }
+  }
+
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('roles');
