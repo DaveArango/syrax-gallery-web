@@ -5,7 +5,13 @@ import { catchError, throwError } from 'rxjs';
 import { AuthService } from '../servicios/auth';
 import { NotificacionesService } from '../servicios/notificaciones';
 
+const API_URL = 'http://localhost:8080';
+
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  if (!req.url.startsWith(API_URL)) {
+    return next(req);
+  }
+
   const auth = inject(AuthService);
   const router = inject(Router);
   const avisos = inject(NotificacionesService);

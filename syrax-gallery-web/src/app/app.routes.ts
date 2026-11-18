@@ -15,6 +15,7 @@ import { TallerObras } from './componentes/taller-obras/taller-obras';
 import { TallerServicios } from './componentes/taller-servicios/taller-servicios';
 import { TallerAgenda } from './componentes/taller-agenda/taller-agenda';
 import { TallerVentas } from './componentes/taller-ventas/taller-ventas';
+import { TallerPerfil } from './componentes/taller-perfil/taller-perfil';
 import { guestGuard, rolGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
@@ -46,6 +47,7 @@ export const routes: Routes = [
   { path: 'taller/servicios', component: TallerServicios, canActivate: [rolGuard('AZANTYS')] },
   { path: 'taller/agenda', component: TallerAgenda, canActivate: [rolGuard('AZANTYS')] },
   { path: 'taller/ventas', component: TallerVentas, canActivate: [rolGuard('AZANTYS')] },
+    { path: 'taller/perfil', component: TallerPerfil, canActivate: [rolGuard('AZANTYS')] },
 
   { path: '**', pathMatch: 'full', redirectTo: '/' },
 ];

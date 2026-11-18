@@ -1,0 +1,14 @@
+@if (url()) {
+  <div class="d-flex align-items-center gap-3">
+    <img class="vista-previa" [src]="url()" alt="Vista previa de la imagen" />
+    <button type="button" class="btn btn-sm btn-outline-secondary" (click)="quitar()">Cambiar imagen</button>
+  </div>
+} @else {
+  <input type="file" class="form-control" accept="image/*" aria-label="Elegir imagen"
+         [disabled]="subiendo()" (change)="elegir($event)" />
+  @if (subiendo()) {
+    <div class="small text-muted mt-1">
+      <span class="spinner-border spinner-border-sm me-1"></span>Subiendo imagen...
+    </div>
+  }
+}

@@ -272,3 +272,9 @@ h1, h2, h3, h4, h5, h6,
   background-color: var(--syrax-vino);
   color: var(--syrax-crema);
 }
+
+.vista-perfil { 
+  object-fit: cover; 
+  border-radius: 50%; 
+  border: 3px solid var(--syrax-texto); 
+}
