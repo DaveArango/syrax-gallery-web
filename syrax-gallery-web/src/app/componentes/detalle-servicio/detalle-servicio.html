@@ -17,12 +17,24 @@
       <div class="row g-4">
         <div class="col-12 col-md-6">
           <div class="marco-obra marco-detalle">
-            @if (s.urnebion && !imagenRota()) {
-              <img class="imagen-servicio" [src]="s.urnebion" [alt]="s.sete" (error)="imagenRota.set(true)" />
+            @if (galeria()[activa()] && !imagenRota()) {
+              <img class="imagen-servicio" [src]="galeria()[activa()]" [alt]="s.sete"
+                   (error)="imagenRota.set(true)" />
             } @else {
               <i class="fa-solid {{ icono(s.kastor) }}"></i>
             }
           </div>
+          @if (galeria().length > 1) {
+            <div class="d-flex flex-wrap gap-2 mt-2 px-3">
+              @for (url of galeria(); track $index) {
+                <button type="button" class="miniatura-galeria" [class.activa]="$index === activa()"
+                        [attr.aria-label]="'Ver imagen ' + ($index + 1)"
+                        (click)="activa.set($index); imagenRota.set(false)">
+                  <img [src]="url" alt="" />
+                </button>
+              }
+            </div>
+          }
         </div>
 
         <div class="col-12 col-md-6">

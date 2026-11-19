@@ -12,6 +12,7 @@ import { mensajeDeError } from '../../utilidades/errores';
 import {
   diaDeLaSemana, duracionLegible, hoyComoFecha, iconoDeServicio, nombreDeDia, nombreDeServicio,
 } from '../../utilidades/servicios';
+import { ImagenesReferenciaService } from '../../servicios/imagenes-referencia';
 
 // Página de un servicio (Sunfyre): información, horas libres del día escogido y reserva
 @Component({
@@ -26,6 +27,15 @@ export class DetalleServicio {
   private avisos = inject(NotificacionesService);
   private destroyRef = inject(DestroyRef);
   private router = inject(Router);
+  private imagenesReferencia = inject(ImagenesReferenciaService);
+
+  extras = signal<string[]>([]);
+  activa = signal(0);
+
+  galeria = computed(() => {
+    const servicio = this.servicio();
+    return servicio ? [servicio.urnebion, ...this.extras()].filter(Boolean) : [];
+  });
 
   readonly hoy = hoyComoFecha();
 
@@ -68,7 +78,10 @@ export class DetalleServicio {
       )
       .subscribe((servicio) => {
         this.servicio.set(servicio);
-        if (servicio) this.cargarMasServicios(servicio);
+        if (servicio) {
+          this.cargarMasServicios(servicio);
+          this.cargarImagenes(servicio.id);
+        }
       });
 
     // Horas libres: se piden de nuevo al cambiar de servicio, de fecha o al reservar.
@@ -93,11 +106,23 @@ export class DetalleServicio {
       .subscribe((ventanas) => this.ventanas.set(ventanas));
   }
 
+  private cargarImagenes(id: string): void {
+    this.imagenesReferencia
+      .listar('sunfyre', id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (respuesta) => this.extras.set(respuesta.urls),
+        error: () => this.extras.set([]),
+      });
+  }
+
   private limpiar(): void {
     this.servicio.set(undefined);
     this.masServicios.set([]);
     this.imagenRota.set(false);
     this.fecha.set(this.hoy);
+    this.extras.set([]);
+    this.activa.set(0);
     window.scrollTo({ top: 0 });
   }
 
