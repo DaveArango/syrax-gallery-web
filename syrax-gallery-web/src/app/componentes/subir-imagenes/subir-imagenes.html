@@ -1,0 +1,29 @@
+<div class="d-flex flex-wrap gap-2 mb-2">
+  @for (url of urls(); track $index; let i = $index) {
+    <div class="miniatura">
+      <img [src]="url" [alt]="'Imagen ' + (i + 1)" />
+      @if (i === 0) {
+        <span class="badge badge-syrax etiqueta-portada">Portada</span>
+      }
+      <div class="acciones">
+        @if (i > 0) {
+          <button type="button" class="btn btn-light btn-sm" title="Usar como portada"
+                  (click)="hacerPortada(i)"><i class="fa-solid fa-star"></i></button>
+        }
+        <button type="button" class="btn btn-light btn-sm" title="Quitar"
+                (click)="quitar(i)"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+    </div>
+  }
+</div>
+
+@if (urls().length < maximo()) {
+  <input type="file" class="form-control" accept="image/*" multiple aria-label="Elegir imágenes"
+         [disabled]="subiendo()" (change)="elegir($event)" />
+}
+@if (subiendo()) {
+  <div class="small text-muted mt-1">
+    <span class="spinner-border spinner-border-sm me-1"></span>Subiendo imágenes...
+  </div>
+}
+<div class="form-text">{{ urls().length }} de {{ maximo() }} imágenes. La primera es la portada.</div>

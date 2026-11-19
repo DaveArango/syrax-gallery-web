@@ -1,4 +1,5 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { ImagenesReferenciaService } from '../../servicios/imagenes-referencia';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -16,6 +17,7 @@ import { Kanez } from '../../modelos/kanez';
 import { mensajeDeError } from '../../utilidades/errores';
 import { iconoDeObra, nombreDeEstado, nombreDeObra } from '../../utilidades/obras';
 
+
 // Página de una obra: imagen, información, comentarios (Gida) y más obras del mismo tipo
 @Component({
   selector: 'app-detalle-obra',
@@ -31,6 +33,7 @@ export class DetalleObra {
   private destroyRef = inject(DestroyRef);
   carrito = inject(CarritoService);
 
+
   readonly maximoTexto = 500;
 
   // undefined = cargando, null = la obra no existe
@@ -42,6 +45,17 @@ export class DetalleObra {
 
   gidaForm = inject(FormBuilder).nonNullable.group({
     texto: ['', [Validators.required, Validators.maxLength(this.maximoTexto)]],
+  });
+  
+  private imagenesReferencia = inject(ImagenesReferenciaService);
+
+  extras = signal<string[]>([]);
+  activa = signal(0);
+
+  // Portada + imágenes de referencia
+  galeria = computed(() => {
+    const obra = this.obra();
+    return obra ? [obra.urnebion, ...this.extras()].filter(Boolean) : [];
   });
 
   constructor() {
@@ -59,7 +73,18 @@ export class DetalleObra {
         if (obra) {
           this.cargarComentarios(obra.id);
           this.cargarMasObras(obra);
+          this.cargarImagenes(obra.id);
         }
+      });
+  }
+
+  private cargarImagenes(id: string): void {
+    this.imagenesReferencia
+      .listar('caraxes', id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (respuesta) => this.extras.set(respuesta.urls),
+        error: () => this.extras.set([]),
       });
   }
 
@@ -69,6 +94,8 @@ export class DetalleObra {
     this.masObras.set([]);
     this.imagenRota.set(false);
     this.gidaForm.reset();
+    this.extras.set([]);
+    this.activa.set(0);
     window.scrollTo({ top: 0 });
   }
 

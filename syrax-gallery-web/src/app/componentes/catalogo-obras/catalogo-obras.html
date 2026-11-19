@@ -42,7 +42,12 @@
               <div class="card h-100 shadow-sm">
                 <a [routerLink]="['/obra', obra.id]" class="marco-obra enlace-detalle"
                    [attr.aria-label]="'Ver ' + obra.sete">
-                  <i class="fa-solid {{ icono(obra.kastor) }}"></i>
+                  @if (obra.urnebion && tieneImagen(obra.id)) {
+                    <img class="imagen-obra" [src]="obra.urnebion" [alt]="obra.sete"
+                         (error)="imagenFallo(obra.id)" />
+                  } @else {
+                    <i class="fa-solid {{ icono(obra.kastor) }}"></i>
+                  }
                 </a>
                 <div class="card-body d-flex flex-column">
                   <div class="d-flex justify-content-between align-items-start gap-2">

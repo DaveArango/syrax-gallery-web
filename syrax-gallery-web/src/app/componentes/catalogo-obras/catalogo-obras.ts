@@ -28,6 +28,7 @@ export class CatalogoObras {
   private avisos = inject(NotificacionesService);
   carrito = inject(CarritoService);
 
+
   esZentys(): boolean {
     return this.auth.tieneRol('ZENTYS');
   }
@@ -43,6 +44,16 @@ export class CatalogoObras {
   texto = signal('');
   kastor = signal<CaraxesKastor | ''>('');
   pagina = signal(0);
+
+  private sinImagen = signal<string[]>([]);
+
+  tieneImagen(id: string): boolean {
+    return !this.sinImagen().includes(id);
+  }
+
+  imagenFallo(id: string): void {
+    this.sinImagen.update((lista) => [...lista, id]);
+  }
 
   // Búsqueda reactiva: espera 400 ms sin teclear y no repite si el texto quedó igual.
   // Solo se espera al escribir; cambiar de página o de tipo pide los datos de una vez.

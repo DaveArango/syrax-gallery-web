@@ -1,5 +1,7 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, DestroyRef, inject, signal, viewChild } from '@angular/core';
+import { Observable, catchError, map, of, switchMap } from 'rxjs';
+import { ImagenesReferenciaService } from '../../servicios/imagenes-referencia';
+import { SubirImagenes } from '../subir-imagenes/subir-imagenes';import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DecimalPipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -11,7 +13,7 @@ import { mensajeDeError } from '../../utilidades/errores';
 // Página del Azantys: ofrecer un servicio (Sunfyre) con su precio, duración y horario de atención
 @Component({
   selector: 'app-taller-servicios',
-  imports: [ReactiveFormsModule, DecimalPipe],
+  imports: [ReactiveFormsModule, DecimalPipe, SubirImagenes],
   templateUrl: './taller-servicios.html',
   styleUrl: './taller-servicios.css',
 })
@@ -19,6 +21,9 @@ export class TallerServicios {
   private sunfyreService = inject(SunfyreService);
   private avisos = inject(NotificacionesService);
   private destroyRef = inject(DestroyRef);
+  private imagenesReferencia = inject(ImagenesReferenciaService);
+
+  
 
   readonly tipos: SunfyreKastor[] = ['ARTE_PIEL', 'MURAL', 'RETRATO_TRADICIONAL', 'CUSTOMIZACION'];
   readonly semana: DiaSemana[] = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
@@ -27,6 +32,8 @@ export class TallerServicios {
   servicios = signal<SunfyreDetalleResponse[]>([]);
   cargando = signal(true);
   isLoading = signal(false);
+  imagenes = viewChild(SubirImagenes);
+  adicionales = signal<string[]>([]);
 
   // Días de atención marcados: empiezan de lunes a viernes
   dias = signal<DiaSemana[]>(['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY']);
@@ -68,6 +75,22 @@ export class TallerServicios {
     return control.invalid && control.touched;
   }
 
+  alCambiarImagenes(urls: string[]): void {
+    const portada = this.servicioForm.controls.urnebion;
+    portada.setValue(urls[0] ?? '');
+    portada.markAsTouched();
+    this.adicionales.set(urls.slice(1));
+  }
+
+  private guardarAdicionales(id: string): Observable<boolean> {
+    const adicionales = this.adicionales();
+    if (adicionales.length === 0) return of(false);
+    return this.imagenesReferencia.guardar('sunfyre', id, adicionales).pipe(
+      map(() => false),
+      catchError(() => of(true))
+    );
+  }
+
   atiende(dia: DiaSemana): boolean {
     return this.dias().includes(dia);
   }
@@ -83,8 +106,14 @@ export class TallerServicios {
     return minutos <= 0 || Number(datos.duracionMinutos) > minutos;
   }
 
-  puedeGuardar(): boolean {
-    return this.servicioForm.valid && this.dias().length > 0 && !this.horarioInvalido() && !this.isLoading();
+    puedeGuardar(): boolean {
+    return (
+      this.servicioForm.valid &&
+      this.dias().length > 0 &&
+      !this.horarioInvalido() &&
+      !this.isLoading() &&
+      !this.imagenes()?.subiendo()
+    );
   }
 
   onSubmit(): void {
@@ -109,10 +138,17 @@ export class TallerServicios {
 
     this.sunfyreService
       .crear(solicitud)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        switchMap((servicio) => this.guardarAdicionales(servicio.id).pipe(map((fallo) => ({ servicio, fallo })))),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe({
-        next: (servicio) => {
+        next: ({ servicio, fallo }) => {
           this.avisos.exito(`"${servicio.sete}" ya aparece en el catálogo de servicios.`);
+          if (fallo) {
+            this.avisos.error('El servicio se creó, pero no pudimos guardar sus imágenes adicionales.');
+          }
+          this.imagenes()?.limpiar();
           this.servicioForm.reset();
           this.isLoading.set(false);
           this.cargar();
