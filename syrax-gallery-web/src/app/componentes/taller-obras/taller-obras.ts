@@ -1,5 +1,7 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, DestroyRef, inject, signal, viewChild } from '@angular/core';
+import { Observable, catchError, map, of, switchMap } from 'rxjs';
+import { ImagenesReferenciaService } from '../../servicios/imagenes-referencia';
+import { SubirImagenes } from '../subir-imagenes/subir-imagenes';import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DecimalPipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -12,7 +14,7 @@ import { mensajeDeError } from '../../utilidades/errores';
 // Página del Azantys: registrar una obra y decidir si la exhibe, la vende o la retira
 @Component({
   selector: 'app-taller-obras',
-  imports: [ReactiveFormsModule, DecimalPipe],
+  imports: [ReactiveFormsModule, DecimalPipe, SubirImagenes],
   templateUrl: './taller-obras.html',
   styleUrl: './taller-obras.css',
 })
@@ -20,12 +22,15 @@ export class TallerObras {
   private caraxesService = inject(CaraxesService);
   private avisos = inject(NotificacionesService);
   private destroyRef = inject(DestroyRef);
+  private imagenesReferencia = inject(ImagenesReferenciaService);
 
   readonly tipos: CaraxesKastor[] = ['PINTURA', 'ESCULTURA', 'FOTOGRAFIA', 'DIBUJO', 'GRABADO'];
 
   obras = signal<CaraxesDetalleResponse[]>([]);
   cargando = signal(true);
   isLoading = signal(false);
+  imagenes = viewChild(SubirImagenes);
+  adicionales = signal<string[]>([]);
 
   obraForm = inject(FormBuilder).nonNullable.group({
     sete: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
@@ -60,6 +65,22 @@ export class TallerObras {
     return control.invalid && control.touched;
   }
 
+  alCambiarImagenes(urls: string[]): void {
+    const portada = this.obraForm.controls.urnebion;
+    portada.setValue(urls[0] ?? '');
+    portada.markAsTouched();
+    this.adicionales.set(urls.slice(1));
+  }
+
+  private guardarAdicionales(id: string): Observable<boolean> {
+    const adicionales = this.adicionales();
+    if (adicionales.length === 0) return of(false);
+    return this.imagenesReferencia.guardar('caraxes', id, adicionales).pipe(
+      map(() => false),
+      catchError(() => of(true))
+    );
+  }
+
   onSubmit(): void {
     if (this.obraForm.invalid || this.isLoading()) return;
 
@@ -76,10 +97,17 @@ export class TallerObras {
 
     this.caraxesService
       .crear(solicitud)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        switchMap((obra) => this.guardarAdicionales(obra.id).pipe(map((fallo) => ({ obra, fallo })))),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe({
-        next: (obra) => {
+        next: ({ obra, fallo }) => {
           this.avisos.exito(`"${obra.sete}" quedó guardada como borrador. Publícala para que salga en el catálogo.`);
+          if (fallo) {
+            this.avisos.error('La obra se guardó, pero no pudimos guardar sus imágenes adicionales.');
+          }
+          this.imagenes()?.limpiar();
           this.obraForm.reset();
           this.isLoading.set(false);
           this.cargar();

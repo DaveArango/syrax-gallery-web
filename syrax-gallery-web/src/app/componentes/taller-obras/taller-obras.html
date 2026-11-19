@@ -44,15 +44,15 @@
             </div>
 
             <div class="mb-3">
-              <label for="urnebion" class="form-label">Enlace de la imagen</label>
-              <input id="urnebion" type="url" class="form-control" formControlName="urnebion"
-                     placeholder="https://..." />
+              <label class="form-label">Imágenes de la obra</label>
+              <app-subir-imagenes (cambio)="alCambiarImagenes($event)" />
               @if (invalido('urnebion')) {
-                <div class="text-danger small mt-1">Pega un enlace que empiece por http:// o https://.</div>
+                <div class="text-danger small mt-1">Sube al menos una imagen de la obra.</div>
               }
             </div>
 
-            <button type="submit" class="btn btn-syrax w-100" [disabled]="obraForm.invalid || isLoading()">
+            <button type="submit" class="btn btn-syrax w-100"
+                    [disabled]="obraForm.invalid || isLoading() || imagenes()?.subiendo()">
               @if (isLoading()) {
                 <span class="spinner-border spinner-border-sm me-1"></span>Guardando...
               } @else {
