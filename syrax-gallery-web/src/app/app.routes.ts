@@ -16,6 +16,7 @@ import { TallerServicios } from './componentes/taller-servicios/taller-servicios
 import { TallerAgenda } from './componentes/taller-agenda/taller-agenda';
 import { TallerVentas } from './componentes/taller-ventas/taller-ventas';
 import { TallerPerfil } from './componentes/taller-perfil/taller-perfil';
+import { AdminVerificaciones } from './componentes/admin-verificaciones/admin-verificaciones';
 import { guestGuard, rolGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
@@ -47,7 +48,10 @@ export const routes: Routes = [
   { path: 'taller/servicios', component: TallerServicios, canActivate: [rolGuard('AZANTYS')] },
   { path: 'taller/agenda', component: TallerAgenda, canActivate: [rolGuard('AZANTYS')] },
   { path: 'taller/ventas', component: TallerVentas, canActivate: [rolGuard('AZANTYS')] },
-    { path: 'taller/perfil', component: TallerPerfil, canActivate: [rolGuard('AZANTYS')] },
+  { path: 'taller/perfil', component: TallerPerfil, canActivate: [rolGuard('AZANTYS')] },
+
+  //Página del Admin (administrador)
+  { path: 'admin/verificaciones', component: AdminVerificaciones, canActivate: [rolGuard('ADMIN')] },
 
   { path: '**', pathMatch: 'full', redirectTo: '/' },
 ];

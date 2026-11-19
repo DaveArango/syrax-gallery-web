@@ -76,6 +76,7 @@ Las cuentas nuevas se crean en `/registro` y necesitan una contraseña de mínim
 | `/taller/servicios` | Azantys | Crear y gestionar sus servicios |
 | `/taller/agenda` | Azantys | Agenda de sus servicios |
 | `/taller/ventas` | Azantys | Ventas de sus obras |
+| `/admin/verificaciones` | Administrador | Aprobar o rechazar la identidad de los Azantys |
 
 ## Organización del código
 

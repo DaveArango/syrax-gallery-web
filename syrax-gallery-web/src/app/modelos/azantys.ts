@@ -22,3 +22,17 @@ export interface AzantysDetalleResponse {
   laehurlionVerificado: boolean;
   habilitadoParaPublicar: boolean;
 }
+
+export interface AzantysPendienteResponse {
+  id: string;
+  nombre: string;
+  kostion: string;
+  runiapos: string;
+  iksia: string;
+  laehurlion: string;
+}
+ 
+export interface RevisarVerificacionRequest {
+  aprobada: boolean;
+  motivo: string | null;
+}

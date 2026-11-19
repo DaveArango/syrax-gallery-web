@@ -54,6 +54,11 @@
             <a routerLink="/taller/perfil" routerLinkActive="active" class="nav-link">Mi perfil</a>
           </li>
         }
+        @if (isLoggedIn() && tieneRol('ADMIN')) {
+          <li class="nav-item">
+            <a routerLink="/admin/verificaciones" routerLinkActive="active" class="nav-link">Verificaciones</a>
+          </li>
+        }
       </ul>
       <div class="d-flex gap-2">
         @if (isLoggedIn()) {
