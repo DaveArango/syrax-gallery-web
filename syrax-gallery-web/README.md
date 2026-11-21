@@ -117,6 +117,7 @@ Las cuentas nuevas se crean en `/registro` y necesitan una contraseña de mínim
 | `/taller/perfil` | Azantys | Perfil del artista |
 | `/admin/verificaciones` | Administrador | Aprobar o rechazar la identidad de los Azantys |
 
+
 ## Cómo cumple la Entrega 3
 
 | Requisito | Dónde está |
@@ -134,14 +135,28 @@ Las cuentas nuevas se crean en `/registro` y necesitan una contraseña de mínim
 | Maquetación con Bootstrap | Instalado en `angular.json`; navbar con menú hamburguesa, tarjetas en cuadrícula adaptable y formularios con clases de Bootstrap |
 | Funcionalidad propia | **Kelitis** (depósito en garantía): el pago de un servicio queda retenido y el comprador lo libera al aprobar el servicio en `/mis-servicios` |
 
-### Extras implementados
+## Funcionalidad propia del nicho (Sección 2.9)
 
-- Búsqueda reactiva con **Signals**: el catálogo busca mientras se escribe (debounce de 400 ms) y combina texto, tipo y página con señales.
-- **Guard por rol**: rutas solo para Zentys, Azantys o Admin; el menú solo muestra las opciones del rol.
-- **MariaDB en Docker**: el backend se conecta a MariaDB y los datos persisten tras reiniciar.
-- **Imágenes en Cloudinary**: las imágenes se suben a un servicio externo y solo se guarda la URL.
-- **Diseño propio**: paleta vino y crema, tipografías Cinzel y EB Garamond, temática de Westeros.
-- Otras funcionalidades: carrito de compras, comentarios en las obras y reserva de servicios con horas libres.
+**Kelitis, el depósito en garantía.** Cuando un comprador (Zentys) reserva y paga un servicio, el dinero queda retenido. Solo se libera al artista (Azantys) cuando el servicio se ejecuta y el comprador lo aprueba en «Mis servicios». Funciona de punta a punta: back (Spring Boot) y front (Angular).
+
+## Otras funcionalidades del nicho
+
+- **Reservas de servicios con agenda:** el Zentys reserva un servicio en una hora libre; la reserva se puede reprogramar, cancelar, iniciar y finalizar. El Azantys ve y gestiona todo en `/taller/agenda`.
+- **Comentarios (Gida) solo de quien compró:** únicamente el Zentys que ya compró una obra puede comentarla; si no, el backend responde con la regla de negocio.
+- **Verificación de identidad del Azantys:** el artista sube su foto de perfil y su número de documento desde «Mi perfil». Un administrador los aprueba o rechaza en `/admin/verificaciones`, y sin aprobación no se puede publicar.
+- **Imágenes de obras y servicios:** el Azantys sube una portada y hasta 5 imágenes de referencia a Cloudinary, y se ven en el catálogo y en el detalle.
+- **Ciclo de vida de las obras:** borrador, exhibición, en venta y retirada (borrado lógico: las retiradas no aparecen en el catálogo).
+- **Carrito de compras** para el Zentys.
+
+## Extras de la guía que hicimos
+
+| Extra | Dónde se ve |
+|---|---|
+| Búsqueda reactiva con Signals | Catálogo de obras: busca mientras se escribe, con debounce, y combina texto, tipo y página con señales |
+| Guard por rol | `rolGuard`: las rutas del Azantys, del Zentys y del administrador están separadas, y el menú solo muestra las opciones del rol |
+| MariaDB con Docker | Los datos siguen ahí después de reiniciar (perfil `mariadb`, ver «Cómo ejecutar») |
+| Archivos e imágenes | Subida a Cloudinary, mostrada en el catálogo y en el detalle |
+| Otra funcionalidad más | reservas con agenda o verificación del Azantys con revisión del administrador |
 
 ## Flujo de prueba de punta a punta
 
